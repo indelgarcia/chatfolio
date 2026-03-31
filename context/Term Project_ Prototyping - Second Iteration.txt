@@ -1,0 +1,27 @@
+﻿Term Project: Prototyping - Second Iteration
+Purpose
+The goal of this phase is to transition from your initial visual designs to a fully working, test-ready prototype. This assignment evaluates the functional quality of your design, specifically focusing on how smoothly users can perform tasks and the depth of the human-AI coordination.
+Description
+Your task is to build a functional, interactive prototype that is ready for actual user testing. Unlike the previous iteration, pure sketches or static mockups are no longer sufficient. The core component of this evaluation is the human-AI coordination. We are looking for genuine collaboration, not a system where a user simply clicks a button and the AI does everything in a black box.
+ 
+Design Considerations:
+Focus on the detailed experience of human-in-the-loop process, including but not limited to:
+* Onboarding: How does the user learn what the system can and cannot do?
+* User Input: How does the user specify their intent and steer the AI?
+* System Output: How does the AI present its work for human review?
+* User Feedback: How does the user correct, verify, or iterate on the AI's output?
+ 
+Prototyping Tools:
+You are encouraged to use the tools that allow you to build the best functional experience. Permitted tools include:
+* Frameworks: Streamlit, Next.js, etc.
+* Coding Assistants: GitHub Copilot, Cursor, Claude Code, Antigravity, etc.
+* No-Code / AI-Builders: Lovable, Replit, Google Firebase Studio, v0.dev.
+ 
+Submission
+You must submit a slideshow report (PDF format) exported from Google Slides, PowerPoint, or similar. Treat this as a product pitch deck. Use visuals, mockups, and diagrams. No walls of text. This report should include:
+* User: Who is the user (e.g., user persona)?
+* Tasks: What are the main tasks supported?
+* Walkthrough: How are the tasks supported through your system?
+   * UI walkthrough using screenshots (or a narrative video demonstration) to show the system in action.
+* Deployed Link: You are required to provide a live, accessible link to your deployed prototype so it can be tested.
+Submit as a PDF or markdown document to Canvas.

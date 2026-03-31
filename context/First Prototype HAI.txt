@@ -1,0 +1,156 @@
+https://assisted-investing-ai.lovable.app
+ChatFolio Prototype First Iteration
+
+CHATFOLIO
+Conversational Portfolio Intelligence
+An AI-powered investment advisor that builds your portfolio through conversation — not confusing forms.
+Human-AI Interaction  ·  Product Pitch Deck
+INPUT
+"Retirement savings"
+→ GOAL
+SYSTEM
+When do you need this money?
+INPUT
+"40 years"
+→ TIME HORIZON
+SYSTEM
+How much can you invest each month?
+VIEW PORTFOLIO  →
+2
+
+WHO IS THE USER?
+USER PERSONA
+MJ
+Marcus J.
+26 · Recent Grad · Boston
+Just started his first full-time job
+Has ~$150/mo to invest
+Intimidated by brokerage forms
+Wants to build wealth, not learn finance
+Comfortable with conversational interfaces
+PAIN POINTS
+❌
+Forms are overwhelming
+Traditional onboarding asks 15+ questions upfront with financial jargon
+❓
+No context for choices
+Picking an 'aggressive' portfolio means nothing without explanation
+⏳
+No live feedback
+Users fill out a form and wait — no sense of progress or confirmation
+🔒
+Feels irreversible
+Investors fear committing to an allocation they don't understand
+3
+
+MAIN TASKS SUPPORTED
+TASK ANALYSIS
+01
+🎯  Goal Elicitation
+User states investment intent in plain English. System classifies goal (retirement, house, etc.) and tags it live on the sidebar.
+02
+📊  Risk Profiling
+Conversational scenario questions replace dry risk tolerance surveys. AI interprets nuanced responses and confirms interpretation.
+03
+💼  Portfolio Generation
+After profiling, the system generates a personalized ETF allocation with adjustable risk steering and allocation breakdown.
+04
+🔄  Portfolio Review & Adjustment
+User can accept, adjust, get an AI explanation, or compare alternative allocations — all without leaving the interface.
+05
+👁️  Live Profile Tracking
+A persistent sidebar shows the user's growing profile in real-time, so they always know what's been captured.
+06
+🔮  What-If Simulation
+Users can toggle risk steering or modify allocations and see how outcomes change before committing.
+4
+
+HOW TASKS ARE SUPPORTED
+SYSTEM DESIGN
+💬
+User Input
+Natural language
+chat message
+→
+🤖
+AI Classification
+Intent & slot
+filling (LLM)
+→
+📋
+Live Profile
+Update
+Sidebar state
+reflects changes
+→
+⚙️
+Portfolio
+Engine
+Risk + goal +
+horizon → ETFs
+→
+✅
+Review UI
+Accept / Adjust /
+Explain / Compare
+KEY MECHANISMS
+Confirmation Loop
+AI paraphrases ambiguous answers and asks the user to confirm or clarify before storing to profile.
+Persistent Profile State
+Sidebar shows live state — users see their profile grow in real time, creating a sense of progress.
+Risk Steering Slider
+Post-generation, users can drag risk posture from conservative to aggressive and watch allocation shift.
+Tabbed Review Layer
+Recommendation vs. What If? tabs let users explore without committing — reducing anxiety around decisions.
+5
+
+UI WALKTHROUGH — STEP 1: ONBOARDING CHAT
+1 / 2
+① Progress tracker (4/4 complete)
+② Each user input is tagged & classified by the AI in real time
+③ Live Profile sidebar updates after each turn
+④ AI confirms ambiguous answers before saving (yellow warning card)
+⑤ CTA appears only after all slots are filled
+6
+
+UI WALKTHROUGH — STEP 2: PORTFOLIO RECOMMENDATION
+2 / 2
+① Context header ties recommendation back to stated goal
+② Risk Steering slider lets users override AI suggestion
+③ Stacked bar visualizes exact % allocation at a glance
+④ ETF rows with confidence indicators (High/Med/Low)
+⑤ 4-button action bar: Accept · Adjust · Explain · Compare
+7
+
+DESIGN RATIONALE
+WHY WE BUILT IT THIS WAY
+Conversation over Forms
+Research shows users abandon financial forms at high rates. Dialogue reduces perceived cognitive load and mirrors how people discuss money with a human advisor.
+⚖ Slightly longer onboarding — offset by higher completion rates and user trust.
+Live Profile Sidebar
+Dual-panel design gives users a mental model of what the system 'knows.' It addresses anxiety that information is lost between turns.
+⚖ Requires more screen real estate — designed for desktop-first use.
+Confirmation Loops for Ambiguity
+NLP misclassification of financial intent is high-stakes. The AI explicitly surfaces its interpretation and asks for confirmation before committing.
+⚖ Adds one extra turn in ambiguous cases — worth it for accuracy.
+Defer Commitment at Review
+Four distinct post-generation actions (Accept / Adjust / Explain / Compare) let users explore before committing, reducing decision anxiety.
+⚖ More UI complexity — addressed by clear visual hierarchy and labeled CTAs.
+Risk Steering Slider
+Allows continuous control post-generation without restarting the whole flow. Empowers users who want to override the AI recommendation.
+⚖ Risk of uninformed override — mitigated by Explain function.
+ETF-based Recommendations
+Low-cost index ETFs (VTI, VXUS, etc.) are evidence-based defaults that reduce portfolio cost and complexity for beginner investors.
+⚖ Not suitable for active traders — ChatFolio is explicitly designed for passive, long-term investors.
+8
+
+CHATFOLIO
+Investing, the way you'd talk about it.
+Prototype Link
+🔗  https://assisted-investing-ai.lovable.app
+· Conversational UI
+· AI-Powered Classification
+· Live Profile State
+· Portfolio Engine
+· Risk Steering
+9

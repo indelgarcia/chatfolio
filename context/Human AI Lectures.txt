@@ -1,0 +1,3055 @@
+﻿Week 2 | Designing for Humans
+
+
+Key Concepts
+User's Mental Models
+Designer's Conceptual Models
+Positive and Negative Transfers
+Gulfs of Execution & Evaluation
+Affordances
+Feedback
+Metaphors
+Direct Manipulation
+
+
+Learning Outcomes
+Upon completion of this week, you will be able to:
+Diagnose how internal cognitive maps influence user behavior and system interaction.
+Evaluate how prior knowledge leads to positive or negative experiences in new systems.
+Identify gaps (or gulfs) between user goals and system reality to improve usability.
+Leverage affordances, feedback, metaphors, and direct manipulation to build intuitive interfaces.
+
+
+
+
+Week 3 | Prompt Engineering
+
+
+Key Concepts
+Prompting Difficulties
+Prompting Strategies
+Adversarial Prompting
+Ethical Concerns
+OpenAI API
+Streamlit
+
+
+Learning Outcomes
+Upon completion of this week, you will be able to:
+Identify and articulate core challenges in prompt-based interaction.
+Understand prompt engineering strategies including decomposition and retrieval-augmented generation.
+Analyze security vulnerabilities in LLM systems and evaluate defense mechanisms.
+Build data analysis applications using prompt-based interaction through Streamlit and OpenAI API.
+
+
+
+
+Week 4 | Human-Centered Design Process
+
+
+Key Concepts
+What, Why, and How of Human-centered Design
+User Error vs. System Failure
+Affinity Diagramming
+Empathy Map
+Point-of-View
+How Might We questions
+Low-fidelity vs High-fidelity
+Wizard-of-Oz prototyping
+Think-aloud Usability
+
+
+Learning Outcomes
+Upon completion of this week, you will be able to:
+Explain design as a human-centered problem-solving process.
+Apply empathy-building methods to understand users' needs.
+Identify insights from qualitative data analysis methods such as using affinity diagramming.
+Formulate clear, human-centered problem statements (POVs) grounded in user research.
+Generate diverse design ideas using How Might We questions and structured ideation methods.
+Describe different prototyping methods and evaluation methods.
+
+
+
+
+Week 5 | Agents
+
+
+Key Concepts
+Agentic Interaction
+Function Calling
+Retrieval-Augmented Generation (RAG)
+ReAct Pattern
+Agent Safety
+
+
+Learning Outcomes
+Upon completion of this week, you will be able to:
+Identify the limitations of prompting and understand the need for agentic systems.
+Understand how to enable LLMs to use external tools.
+Understand memory mechanisms for agents, such as RAG (Retrieval-Augmented Generation).
+Analyze safety risks in agentic systems and design safe interaction patterns.
+Build autonomous agents using the ReAct pattern.
+
+
+
+
+Week 6 | Conversational Interaction
+
+
+Key Concepts
+Interaction Modality
+Natural User Interfaces
+Natural Language Interfaces
+The Cooperative Principle and Grice's Maxims
+Computers as Social Actors
+Voice User Interfaces
+Multimodal Interaction
+
+
+Learning Outcomes
+Upon completion of this week, you will be able to:
+Contrast the difference between graphical user interfaces and natural language interfaces.
+Identify linguistic ambiguities (lexical, syntactic, semantic, pragmatic).
+Apply Grice's Maxims and mixed-initiative interaction principles to design cooperative experiences.
+Analyze the psychological impacts of the computers as social actors paradigm.
+Construct a custom conversational interface using generative AI tools.
+
+
+
+
+Week 7 | AI as a Design Material
+
+
+Key Concepts
+Design Material
+Two Sources of Design Complexity
+Four Levels of AI Systems
+Core AI Capabilities: Classification, Clustering, Recommendation, Generation
+Generative AI Design Patterns
+
+
+Learning Outcomes
+Upon completion of this week, you will be able to:
+Identify the specific design challenges associated with human-AI interaction.
+Analyze the design complexity and level of AI systems.
+Understand foundational AI capabilities from classification to generation.
+Apply UX design patterns for AI-driven tools and systems.
+
+
+
+
+Week 9 | Multi Agents
+
+
+Key Concepts
+Human-Agent Co-Creation
+Multi-Agent Systems
+Conversation Patterns (Sequential, Orchestrator, Network, Hierarchy)
+AutoGen
+
+
+Learning Outcomes
+Upon completion of this week, you will be able to:
+Understand various forms of human-agent collaboration and the design trade-offs involved in distributing agency.
+Analyze when and why multi-agent systems are needed over single-agent approaches.
+Identify and compare inter-agent communication patterns (sequential, orchestrator, network, hierarchy).
+Build multi-agent applications using AutoGen with different orchestration strategies.
+
+
+
+
+Week 10 | Designing for Failure
+
+
+Key Concepts
+Fail-safe vs Safe-to-fail
+Slips and Mistakes
+Error prevention & Error tolerance
+Silent Failures
+Human Cognitive Limits
+
+
+Learning Outcomes
+Upon completion of this week, you will be able to:
+Internalize the Design for Failure Mindset.
+Classify Human and System Errors.
+Evaluate Fail-Safe vs. Safe-to-Fail Strategies.
+Identify Multi-Source AI Failures.
+Design for Human Cognitive Constraints.
+Implement Error Prevention and Tolerance UX Patterns.
+
+
+Week 11 | Explainable AI
+
+Key Concepts
+Transparency, Interpretability, and Explainability
+Global vs Local Explainability
+LIME (Local Interpretable Model-Agnostic Explanations)
+SHAP (SHapley Additive exPlanations)
+Feature Visualization & Attribution
+Counterfactual Explanations
+Adversarial Attacks
+ Learning Outcomes
+Upon completion of this week, you will be able to:
+
+
+Define and Differentiate Transparency, Interpretability, and Explainability
+Analyze the Interpretability-Accuracy Trade-off
+Distinguish between Global and Local Explainability
+Apply Post-hoc Explainability Techniques
+Interpret Neural Network Representations
+Probe Models with Interactive Tools
+Utilize Contrastive and Counterfactual Reasoning
+
+Building an Interactive Data Analysis Tool (Part 1)
+Prompt-based interaction represents a fundamental shift in how we build software. Instead of hardcoding every operation, we express intent in natural language and let large language models translate that into executable actions. This article guides you through building an interactive data analysis tool using prompt-based interaction.
+<aside> 🛠
+What we will build: A web application where users can view CSV data, filter it visually, ask analytical questions in natural language, and receive answers computed reliably through LLM-generated code. This moves beyond the chatbot paradigm by combining structured UI controls with the flexibility of prompting, reducing the burden of articulating complex analytical tasks entirely in text.
+</aside>
+<aside> 💡
+What you will learn:
+* How to interact with LLM APIs programmatically (OpenAI API)
+* How to enforce structured outputs using Pydantic schemas
+* How to chain prompts for complex multi-step tasks
+* How to build a hybrid interface that balances user control with AI flexibility </aside>
+Prerequisites: This is a hands-on tutorial. We assume you have a working Python development environment and basic familiarity with:
+* Python programming (functions, classes, file I/O)
+* Working with APIs and environment variables
+* Command-line operations
+If you need help setting up your development environment, API keys, or Python dependencies, refer to these resources:
+* Setting Up Dev Environment
+Part 1: API Fundamentals
+Your First API Call
+At its core, interacting with an LLM via the OpenAI API is straightforward. You send a message and receive a response. The system message defines the AI's role and behavior, while the user message is your actual query. The response is natural language text—flexible, but unpredictable.
+Code:
+response = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "What is a Large Language Model?"}
+    ]
+)
+
+
+print(response.choices[0].message.content)
+Expected Output:
+A Large Language Model (LLM) is a type of artificial intelligence model designed
+to understand and generate human language. These models are trained on massive
+datasets...
+
+________________
+Experimenting with Parameters: Temperature
+When you call an LLM, you can control how it generates text using parameters. One of the most important is temperature, which controls randomness in the model's outputs. At temperature 0, the model is deterministic—it always picks the most likely token, so outputs are identical across runs. Use this for tasks requiring consistency (data analysis, code generation). At higher temperatures (e.g., 1.0), the model samples more creatively, producing varied outputs. Use this for creative tasks (brainstorming, story writing). Let's see this in action.
+Code: Temperature = 0 (Deterministic)
+for i in range(3):
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[{"role": "user", "content": "Name three programming languages."}],
+        temperature=0  # Deterministic
+    )
+    print(f"Attempt {i+1}: {response.choices[0].message.content}\\\\n")
+
+
+Expected Output:
+Attempt 1: 1. Python
+2. Java
+3. JavaScript
+
+
+Attempt 2: 1. Python
+2. Java
+3. JavaScript
+
+
+Attempt 3: 1. Python
+2. Java
+3. JavaScript
+Code: Temperature = 1.0 (Creative)
+for i in range(3):
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[{"role": "user", "content": "Name three programming languages."}],
+        temperature=1.0  # More randomness
+    )
+    print(f"Attempt {i+1}: {response.choices[0].message.content}\\\\n")
+
+
+Expected Output:
+Attempt 1: 1. Python
+2. Java
+3. C++
+
+
+Attempt 2: 1. JavaScript
+2. Ruby
+3. Go
+
+
+Attempt 3: 1. Python
+2. TypeScript
+3. Rust
+
+________________
+Counting Tokens and Estimating Costs
+When working with LLM APIs, you pay per token. Understanding token counts helps you estimate costs and avoid exceeding context limits.
+What is a token? Tokens are chunks of text. Roughly:
+* 1 token ≈ 4 characters in English
+* 1 token ≈ ¾ words
+* 100 tokens ≈ 75 words
+The exact tokenization depends on the model. Use the tiktoken library to count tokens precisely.
+Installing tiktoken
+pip install tiktoken
+Counting Tokens in a Prompt
+Code:
+import tiktoken
+
+
+# Get the tokenizer for gpt-4o-mini
+encoding = tiktoken.encoding_for_model("gpt-4o-mini")
+
+
+prompt = "What are the top three use cases of tokens in OpenAI API?"
+tokens = encoding.encode(prompt)
+
+
+print(f"Text: {prompt}")
+print(f"Number of tokens: {len(tokens)}")
+print(f"Token IDs: {tokens}")
+Expected Output:
+Text: What are the top three use cases of tokens in OpenAI API?
+Number of tokens: 13
+Token IDs: [3923, 527, 279, 1948, 2380, 1005, 5157, 315, 11460, 304, 5377, 15836, 5446, 30]
+Estimating API Costs
+OpenAI charges based on tokens used. For gpt-4o-mini (as of 2026):
+* Input tokens: $0.150 per 1M tokens
+* Output tokens: $0.600 per 1M tokens
+Code:
+def estimate_cost(input_text, output_text, model="gpt-4o-mini"):
+    """Estimate the cost of an API call."""
+    encoding = tiktoken.encoding_for_model(model)
+
+
+    input_tokens = len(encoding.encode(input_text))
+    output_tokens = len(encoding.encode(output_text))
+
+
+    # Pricing for gpt-4o-mini (per 1M tokens)
+    input_price_per_million = 0.150
+    output_price_per_million = 0.600
+
+
+    input_cost = (input_tokens / 1_000_000) * input_price_per_million
+    output_cost = (output_tokens / 1_000_000) * output_price_per_million
+    total_cost = input_cost + output_cost
+
+
+    return {
+        "input_tokens": input_tokens,
+        "output_tokens": output_tokens,
+        "total_tokens": input_tokens + output_tokens,
+        "input_cost": input_cost,
+        "output_cost": output_cost,
+        "total_cost": total_cost
+    }
+
+
+# Example usage
+input_text = "Explain how large language models work in 100 words."
+output_text = """Large language models are neural networks trained on vast amounts of text data.
+They learn patterns in language by predicting the next word in a sequence. During training,
+the model adjusts billions of parameters to minimize prediction errors. When you give it a prompt,
+it generates text by repeatedly predicting the most likely next token based on the context.
+These models use a Transformer architecture, which allows them to process long sequences efficiently
+and capture complex relationships between words. The "large" refers to the number of parameters,
+often reaching hundreds of billions."""
+
+
+cost_info = estimate_cost(input_text, output_text)
+
+
+print(f"Input tokens: {cost_info['input_tokens']}")
+print(f"Output tokens: {cost_info['output_tokens']}")
+print(f"Total tokens: {cost_info['total_tokens']}")
+print(f"\\\\nInput cost: ${cost_info['input_cost']:.6f}")
+print(f"Output cost: ${cost_info['output_cost']:.6f}")
+print(f"Total cost: ${cost_info['total_cost']:.6f}")
+
+
+Expected Output:
+Input tokens: 11
+Output tokens: 108
+Total tokens: 119
+
+
+Input cost: $0.000002
+Output cost: $0.000065
+Total cost: $0.000067
+Part 2: Structured Outputs
+The Problem with Free-Form Text
+Natural language is great for humans, but terrible for programs. Consider this task:
+Code:
+response = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[
+        {
+            "role": "user",
+            "content": """
+            Extract the following details from this text:
+
+
+            Text: 'Alice Smith was born on June 12, 1990.
+            She recently bought a car, a red 2020 Toyota Corolla, with a license
+            plate number ABC1234. Alice lives at 987 Maple Avenue, Suite 201, in
+            Seattle, WA, 98101. She prefers to be contacted by phone at (206) 987-6543.'
+
+
+            Details to Extract:
+            - Name
+            - Date of Birth
+            - Car Model
+            - Car Year
+            - Car Color
+            - License Plate Number
+            - Address
+            - Phone Number
+            """
+        }
+    ]
+)
+
+
+print(response.choices[0].message.content)
+
+
+Expected Output (Unpredictable Format):
+Here are the extracted details:
+
+
+- **Name**: Alice Smith
+- **Date of Birth**: June 12, 1990
+- **Car Model**: Toyota Corolla
+- **Car Year**: 2020
+- **Car Color**: Red
+- **License Plate Number**: ABC1234
+- **Address**: 987 Maple Avenue, Suite 201, Seattle, WA, 98101
+- **Phone Number**: (206) 987-6543
+
+
+Problem: The output is markdown-formatted text. To use this in a program, you would need to:
+1. Parse the markdown
+2. Handle variations (what if the model uses * instead of - ?)
+3. Extract each field reliably
+This is brittle and error-prone.
+________________
+
+
+The Solution: Pydantic Models
+Pydantic is a Python library for data validation. It lets you define the structure of data using Python classes, and automatically validates that data matches the expected format. OpenAI's API integrates with Pydantic to support structured outputs—you define a schema (a Python class describing what fields you expect), and the model guarantees its response will conform to that schema.
+This means no parsing required—you can access fields directly (e.g., data.name, data.car_model). If the model fails to produce valid JSON matching your schema, the API raises an error, allowing you to retry. This eliminates an entire class of bugs.
+Code:
+from pydantic import BaseModel
+
+
+class ExtractedData(BaseModel):
+    name: str
+    date_of_birth: str
+    car_model: str
+    car_year: str
+    car_color: str
+    license_plate_number: str
+    address: str
+    phone_number: str
+
+
+response = client.beta.chat.completions.parse(
+    model="gpt-4o-mini",
+    messages=[
+        {
+            "role": "user",
+            "content": """
+            Extract the following details from this text and format them in a structured way.
+
+
+            Text: 'Alice Smith was born on June 12, 1990.
+            She recently bought a car, a red 2020 Toyota Corolla, with a license
+            plate number ABC1234. Alice lives at 987 Maple Avenue, Suite 201, in
+            Seattle, WA, 98101. She prefers to be contacted by phone at (206) 987-6543.'
+
+
+            Details to Extract:
+            - Name
+            - Date of Birth
+            - Car Model
+            - Car Year
+            - Car Color
+            - License Plate Number
+            - Address
+            - Phone Number
+            """
+        }
+    ],
+    response_format=ExtractedData
+)
+
+
+# Access structured data directly
+data = response.choices[0].message.parsed
+print(f"Name: {data.name}")
+print(f"Car: {data.car_year} {data.car_color} {data.car_model}")
+print(f"Phone: {data.phone_number}")
+Expected Output:
+Name: Alice Smith
+Car: 2020 red Toyota Corolla
+Phone: (206) 987-6543
+Part 3: Prompt Chaining
+Complex tasks benefit from decomposition. Instead of asking the model to do everything at once, we can break the task into steps where each step's output feeds into the next. This improves transparency, debuggability, and reliability.
+Example Task
+Task: Calculate the average score from a simple CSV dataset.
+Setup: Download the sample.csv file from the course materials. It contains:
+Name,Age,Score
+Alice,25,85
+Bob,30,92
+Charlie,28,78
+Diana,35,88
+Eve,22,95
+Approach 1: Single-Step (Paste Data into Prompt)
+A naive approach is to paste the entire CSV into the prompt and ask the model to calculate directly.
+Code:
+import pandas as pd
+
+
+# Load the data
+df = pd.read_csv('sample.csv')
+csv_content = df.to_csv(index=False)
+
+
+prompt = f"""
+Here is a dataset:
+
+
+{csv_content}
+
+
+Calculate the average Score.
+"""
+
+
+response = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[
+        {"role": "user", "content": prompt}
+    ],
+    temperature=0
+)
+
+
+print(response.choices[0].message.content)
+Expected Output:
+The average Score is 87.6.
+Problems with this approach:
+1. Token Limits: This works for 5 rows, but what if you have 10,000 rows? Large datasets exceed the model's context window (128,000 tokens for gpt-4o-mini). A typical CSV with 10,000 rows could easily exceed this limit.
+2. Computational Unreliability: The model is performing arithmetic in its "head" using probabilistic token prediction. While it might get simple averages right, it is not a calculator. For complex aggregations (e.g., standard deviation, percentiles), or even simple sums with many numbers, the model can make mistakes. You cannot trust the model to do math accurately.
+This approach does not scale and is fundamentally unreliable for data analysis.
+________________
+
+
+Approach 2: Multi-Step Chain (Decomposition)
+Instead of asking the LLM to do the math, we ask it to generate code that a reliable Python interpreter can execute. This solves both problems:
+* Token limits: We only send the task description to the LLM, not the entire dataset.
+* Computational reliability: Python performs the calculation, not the LLM.
+Let's break this into a 3-step chain:
+1. Generate Code (LLM)
+2. Execute Code (Python interpreter)
+3. Interpret Result (LLM)
+Each step's output becomes the next step's input.
+Step 1: Generate Code
+Code:
+class Code(BaseModel):
+    code: str
+    
+def generate_code(task_description):
+    """Generate Python code to accomplish a task."""
+    prompt = f"Write Python code to accomplish the following task: {task_description}. Only provide code, no explanations."
+
+
+    response = client.beta.chat.completions.parse(
+        model="gpt-4o-mini",
+        messages=[{"role": "user", "content": prompt}],
+        response_format=Code,
+        temperature=0
+    )
+
+
+    return response.choices[0].message.parsed.code
+
+
+# Usage
+task_description = "Load 'sample.csv' using pandas and calculate the average Score"
+
+
+generated_code = generate_code(task_description)
+print("Generated Code:")
+print(generated_code)
+Expected Output:
+Generated Code:
+import pandas as pd
+
+
+# Load the data
+df = pd.read_csv('sample.csv')
+
+
+# Calculate average Score
+average_score = df['Score'].mean()
+
+
+# Display the result
+print(average_score)
+
+________________
+Step 2: Execute Code
+Now execute the generated code. We isolate code execution in a separate function. If the code fails, we capture the error message (which can be fed back into the LLM for debugging—more on this later).
+<aside> ❗
+Executing arbitrary LLM-generated code is dangerous in production environments. The code below is for educational purposes only. In real applications, you should:
+* Use sandboxed execution environments (e.g., Docker containers, isolated VMs)
+* Implement strict code validation and whitelisting
+* Limit available libraries and system access
+* Monitor and log all executed code
+* Never execute code that interacts with sensitive data or external systems </aside>
+Code:
+import subprocess
+import sys
+
+
+def execute_code(code):
+    """Execute Python code and return the output."""
+    try:
+        # Write code to a temporary file
+        with open("generated_code.py", "w") as f:
+            f.write(code)
+
+
+        # Run the code
+        result = subprocess.run(
+            [sys.executable, "generated_code.py"],
+            capture_output=True,
+            text=True
+        )
+
+
+        return result.stdout if result.returncode == 0 else result.stderr
+
+
+    except Exception as e:
+        return f"Error during execution: {str(e)}"
+
+
+# Usage
+execution_result = execute_code(generated_code)
+print("\\nExecution Result:")
+print(execution_result)
+Expected Output:
+Execution Result:
+87.6
+
+________________
+Step 3: Interpret Result
+The output is a pandas Series representation. Let's ask the LLM to summarize it in natural language.
+Code:
+def interpret_result(result, task_description):
+    """Interpret the result of code execution."""
+    prompt = f"""
+    Task: {task_description}
+
+
+    Execution Result:
+    {result}
+
+
+    Provide a clear, concise interpretation of this result in 2-3 sentences.
+    """
+
+
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0
+    )
+
+
+    return response.choices[0].message.content
+
+
+# Usage
+interpretation = interpret_result(execution_result, task_description)
+print("\\nInterpretation:")
+print(interpretation)
+
+
+Expected Output:
+Interpretation:
+The average score across all individuals in the dataset is 87.6, indicating
+generally strong performance.
+Building a Data Analysis Interface
+So far, we explored prompt chaining through isolated examples—generating code, executing it, and interpreting results. Now we will integrate these techniques into a complete application with a structured user interface. This addresses a core challenge in prompt-based interaction: the articulation barrier. Instead of forcing users to describe data analysis tasks entirely in text, we provide visual controls for filtering and selecting data, then use prompting for the analytical reasoning.
+Why Not Just a Chatbot?
+Chatbots are the dominant interface for generative AI, but they are not always the best choice. For data analysis tasks, consider what a user must articulate:
+Show me the average rating for action movies released between 2010 and 2020, but only include movies with more than 1000 reviews
+This requires precise language, knowledge of available columns, and careful specification of constraints. Users must translate their analytical intent into prose, which is error-prone and tedious.
+A structured UI solves this:
+* Filters for columns, genres, and date ranges are visual controls (checkboxes, sliders)
+* The user asks a simpler question: "What is the average rating?"
+* The system already knows the filtered context
+This hybrid approach—structured input + natural language—reduces the articulation barrier while preserving the flexibility of prompting.
+Our goal: Build a data analysis tool where:
+1. Users upload a CSV and filter it visually
+2. Users ask a factual question about the filtered data
+3. The system generates Python code to compute the answer
+4. The system executes the code reliably
+5. The system visualizes the result (chart + interpretation)
+________________
+
+
+Part 4. Streamlit — The 5-Minute Crash Course
+We will use Streamlit to build our interface. Streamlit turns Python scripts into web apps with minimal code. You write normal Python, and Streamlit handles the HTML, CSS, and JavaScript.
+Installation
+pip install streamlit
+Running a Streamlit App
+Save your code as app.py, then:
+streamlit run app.py
+This opens a browser window with your app.
+________________
+
+
+The Four Essential Concepts
+You only need to understand four things to build our tool.
+________________
+
+
+1. Displaying Content
+Streamlit provides simple functions to render text, dataframes, and charts.
+import streamlit as st
+import pandas as pd
+
+
+st.title("Data Analysis Tool")
+st.write("This is regular text.")
+
+
+df = pd.read_csv('movies.csv')
+st.dataframe(df)  # Interactive table
+st.write() is the universal display function. It automatically renders text, dataframes, charts, and more.
+________________
+
+
+2. User Inputs
+Streamlit provides widgets for collecting user input.
+# ... (Code so far)
+
+
+# Text input
+user_question = st.text_input("Ask a question:", placeholder="e.g., What is the average rating?")
+
+
+# Multiselect
+selected_columns = st.multiselect("Select columns:", df.columns.tolist())
+
+
+# Slider
+year_range = st.slider("Select year range:", 1900, 2024, (2000, 2020))
+
+
+# Button
+if st.button("Analyze"):
+    st.write("Button clicked!")
+
+
+When a user interacts with any widget, Streamlit re-runs the entire script from top to bottom. This is the core mental model: your script is a reactive function of the UI state.
+________________
+
+
+3. Sidebar
+To organize controls, use st.sidebar:
+# ... (Code so far)
+
+
+with st.sidebar:
+    st.header("Filters")
+    selected_columns = st.multiselect("Select columns:", df.columns.tolist())
+Everything inside the with st.sidebar: block appears in a collapsible left panel.
+________________
+
+
+4. Layout Control
+Use st.columns() to create side-by-side layouts:
+# ... Code so far
+
+
+col1, col2 = st.columns(2)
+
+
+with col1:
+    st.write("Left column")
+
+
+with col2:
+    st.write("Right column")
+
+
+That's it. These four concepts are sufficient for our project.
+________________
+
+
+A Minimal Example
+Here is a complete Streamlit app that demonstrates all four concepts:
+import streamlit as st
+
+
+st.title("Hello Streamlit")
+
+
+# Sidebar: Get user's name
+with st.sidebar:
+    name = st.text_input("What's your name?")
+    color = st.selectbox("Favorite color?", ["Red", "Blue", "Green"])
+
+
+# Main area: Two-column layout
+col1, col2 = st.columns(2)
+
+
+with col1:
+    st.subheader("Your Input")
+    st.write(f"Name: {name}")
+    st.write(f"Color: {color}")
+
+
+with col2:
+    st.subheader("Our Response")
+    if name:
+        st.write(f"Hello, {name}!")
+        st.write(f"Great choice! {color} is awesome.")
+    else:
+        st.write("Enter your name to see a greeting.")
+
+________________
+Project Structure
+Before we start coding, let's clarify the architecture.
+File Structure
+project/
+├── app.py              # Main Streamlit application
+├── movies.csv          # Sample dataset
+├── .env                # API key (not committed to git)
+├── requirements.txt    # Python dependencies
+└── generated_code.py   # Temporary file for code execution
+
+
+movies.csv
+Application Flow
+Part 5: Building the Data Filtering Interface
+Step 1: Load Data and Column Selection
+Create app.py:
+import streamlit as st
+import pandas as pd
+
+
+st.set_page_config(page_title="Data Analysis Tool", layout="wide")
+
+
+st.title("Interactive Data Analysis Tool")
+
+
+# Load data
+df = pd.read_csv('movies.csv')
+
+
+# Sidebar: Column selection
+with st.sidebar:
+    st.header("Data Filters")
+
+
+    # Column selection
+    all_columns = df.columns.tolist()
+    selected_columns = st.multiselect(
+        "Select columns to include:",
+        all_columns,
+        default=all_columns  # Start with all columns selected
+    )
+
+
+    if not selected_columns:
+        st.error("Please select at least one column.")
+        st.stop()
+
+
+    # Apply column filter
+    filtered_df = df[selected_columns]
+
+
+What this does:
+* Loads movies.csv
+* Creates a sidebar with column selection multiselect
+* User can choose which columns to include in the analysis
+* filtered_df contains only selected columns
+________________
+
+
+Step 2: Add Row Filters
+Now add filters for specific columns we know exist in movies.csv:
+# Add this inside the sidebar, after column selection
+st.subheader("Row Filters")
+
+
+# Genre filter
+if 'Genre' in filtered_df.columns:
+    genres = filtered_df['Genre'].dropna().unique()
+    selected_genres = st.multiselect(
+        "Filter by Genre:",
+        genres,
+        default=genres.tolist()
+    )
+    filtered_df = filtered_df[filtered_df['Genre'].isin(selected_genres)]
+
+
+# Release Year filter
+if 'Release Year' in filtered_df.columns:
+    min_year = int(filtered_df['Release Year'].min())
+    max_year = int(filtered_df['Release Year'].max())
+    year_range = st.slider(
+        "Filter by Release Year:",
+        min_year,
+        max_year,
+        (min_year, max_year)
+    )
+    filtered_df = filtered_df[
+        (filtered_df['Release Year'] >= year_range[0]) &
+        (filtered_df['Release Year'] <= year_range[1])
+    ]
+
+
+# IMDB Rating filter
+if 'IMDB Rating' in filtered_df.columns:
+    min_rating = float(filtered_df['IMDB Rating'].min())
+    max_rating = float(filtered_df['IMDB Rating'].max())
+    rating_range = st.slider(
+        "Filter by IMDB Rating:",
+        min_rating,
+        max_rating,
+        (min_rating, max_rating)
+    )
+    filtered_df = filtered_df[
+        (filtered_df['IMDB Rating'] >= rating_range[0]) &
+        (filtered_df['IMDB Rating'] <= rating_range[1])
+    ]
+
+
+What this does:
+* Adds three specific filters for the movies dataset:
+   * Genre: Multiselect for categorical filtering
+   * Release Year: Slider for year range
+   * IMDB Rating: Slider for rating range
+* Each filter checks if the column exists (in case user deselected it)
+* Filters are applied sequentially to filtered_df
+Step 3: Display Data and Accept Questions
+Now let's show the filtered data and add a question input. We'll use a two-column layout: left for the filtered dataset and question input, right for analysis results (to be implemented next).
+# Add this after the sidebar block (outside with st.sidebar:)
+col1, col2 = st.columns([1, 1])
+
+
+with col1:
+    st.subheader("Filtered Dataset")
+    st.write(filtered_df)
+
+
+    st.subheader("Ask a Question")
+    user_question = st.text_input(
+        "What would you like to know about this data?",
+        placeholder="e.g., What is the average IMDB rating?"
+    )
+
+
+    analyze_button = st.button("Analyze", type="primary")
+
+
+with col2:
+    st.subheader("Analysis Results")
+
+
+    if analyze_button and user_question:
+        st.info("Analysis pipeline will be implemented in the next step...")
+    elif analyze_button and not user_question:
+        st.error("Please enter a question.")
+    else:
+        st.write("Enter a question and click 'Analyze' to see results.")
+
+
+What this does:
+* Shows the filtered dataset so users can see what they're analyzing
+* Accepts questions via text input with helpful placeholder examples
+* Analyze button to trigger the analysis (logic coming in Part 5)
+* Uses two columns to separate input (left) from output (right)
+Part 6: Connecting to the LLM Pipeline
+Now we integrate the 3-step prompt chain we built in Part 3.
+Step 1: Set Up OpenAI Client
+Add imports at the top of app.py:
+from openai import OpenAI
+from dotenv import load_dotenv
+import os
+from pydantic import BaseModel
+import subprocess
+
+
+load_dotenv()
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+
+Step 2: Helper Functions (From Previous Session)
+Add these functions to app.py:
+class Code(BaseModel):
+    code: str
+
+
+def generate_code(task_description, df_schema):
+    """Generate Python code to accomplish a task on a dataframe."""
+    prompt = f"""
+    Your code will be executed in the following environment:
+
+
+    ```python
+    import pandas as pd
+    import numpy as np
+
+
+    df = pd.read_csv('temp_data.csv')
+
+
+    # YOUR CODE GOES HERE
+    ```
+
+
+    DataFrame schema:
+    {df_schema}
+
+
+    Task: {task_description}
+
+
+    Write the code that will replace "# YOUR CODE GOES HERE".
+    Make sure to print the result (do not save to variables without printing).
+
+
+    Provide only executable Python code, no explanations.
+    """
+
+
+    response = client.beta.chat.completions.parse(
+        model="gpt-4o-mini",
+        messages=[{"role": "user", "content": prompt}],
+        response_format=Code,
+        temperature=0
+    )
+
+
+    return response.choices[0].message.parsed.code
+
+
+def execute_code(code, df):
+    """Execute generated code on a dataframe.
+
+
+    WARNING: This is unsafe for production. Use sandboxing in real applications.
+    """
+    try:
+        # Save dataframe to temp CSV
+        df.to_csv('temp_data.csv', index=False)
+
+
+        # Prepend imports and dataframe loading to the code
+        full_code = f"""
+import pandas as pd
+import numpy as np
+
+
+df = pd.read_csv('temp_data.csv')
+
+
+{code}
+"""
+
+
+        # Write to file
+        with open("generated_code.py", "w") as f:
+            f.write(full_code)
+
+
+        # Execute
+        result = subprocess.run(
+            [sys.executable, "generated_code.py"],
+            capture_output=True,
+            text=True,
+            timeout=10
+        )
+
+
+        return result.stdout if result.returncode == 0 else result.stderr
+
+
+    except Exception as e:
+        return f"Error during execution: {str(e)}"
+
+
+def interpret_result(result, question):
+    """Interpret code execution result in natural language."""
+    prompt = f"""
+    Question: {question}
+
+
+    Execution result:
+    {result}
+
+
+    Provide a clear, concise interpretation in 2-3 sentences.
+    """
+
+
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0
+    )
+
+
+    return response.choices[0].message.content
+
+
+def get_dataframe_schema(df):
+    """Generate a schema description for the LLM."""
+    schema = f"Columns: {df.columns.tolist()}\\\\n"
+    schema += f"Data types:\\\\n{df.dtypes.to_string()}\\\\n"
+    schema += f"Shape: {df.shape}\\\\n"
+    schema += f"\\\\nSample data (first 3 rows):\\\\n{df.head(3).to_string()}"
+    return schema
+
+
+
+________________
+Step 3: Implement the Analysis Pipeline
+Now we connect the button to the actual analysis logic. Add this code inside the with col2: block:
+with col2:
+    st.subheader("Analysis Results")
+
+
+    if analyze_button and user_question:
+        # Generate schema
+        schema = get_dataframe_schema(filtered_df)
+
+
+        # Step 1: Generate code
+        generated_code = generate_code(user_question, schema)
+
+
+        # Step 2: Execute code
+        result = execute_code(generated_code, filtered_df)
+
+
+        # Step 3: Interpret result
+        interpretation = interpret_result(result, user_question)
+
+
+        # Display results
+        st.write("**Generated Code:**")
+        st.code(generated_code, language='python')
+
+
+        st.write("**Execution Output:**")
+        st.code(result, language="text")
+
+
+        st.write("**Interpretation:**")
+        st.write(interpretation)
+
+
+    elif analyze_button and not user_question:
+        st.error("Please enter a question.")
+
+
+What this does:
+* When the Analyze button is clicked and a question is entered:
+   * Runs the 3-step prompt chain (generate → execute → interpret)
+   * Displays results vertically in col2:
+      1. Generated Code: Python code from the LLM
+      2. Execution Output: Raw result from running the code
+      3. Interpretation: Natural language explanation
+* Shows error if no question is entered
+🔎 Thinking Point: In the current implementation, the interpretation does not take into account that the user has filtered only specific genres or ratings. For example, if the user filtered IMDB rating to be above 7 and then asks "What is the average IMDB rating?", the interpretation might say "The average rating is 8.12. This is surprisingly high!" without realizing the data was pre-filtered. How do you think we can make the LLM generate a more proper interpretation for this? How would you implement this?
+📦 Complete Implementation
+https://github.com/bchaicourse/HAI2026-Week3-Practice
+Clone the repository, run the code, and explore how each component works. Understanding this foundation will be essential for the more sophisticated systems we build in the coming weeks.
+
+
+Building an Interactive Data Analysis Tool (Part 2)
+⭐ You can better see the step-by-step changes and the complete codebase for this article at https://bchaicourse.github.io/HAI2026-Interactive-Slides/lecture2 ⭐
+This post continues from Building an Interactive Data Analysis Tool (Part 1). In that post, we built a Streamlit app where users filter a movie dataset with sidebar controls and ask questions in natural language. The app used a hardcoded 3-step pipeline to answer those questions: generate Python code, execute it, and interpret the result. It worked, but the pipeline was rigid. If the generated code failed, the app showed the error and stopped. If a question needed a different approach, the pipeline could not adapt.
+In this post, we turn that static pipeline into an agentic system. Instead of following fixed steps, the LLM will choose its own tools, reason about intermediate results, retry when something goes wrong, and pause for human approval before taking action.
+<aside> 🛠
+What we will build: An upgraded version of the Part 1 app where the LLM autonomously selects tools, reasons through multi-step analysis, self-corrects when code fails, and requests human approval before executing actions. The result is a data analysis agent that can recover from mistakes and respond to user feedback in real time.
+You can find the 📦 complete implementation 📦 at the github link below:
+https://github.com/bchaicourse/HAI2026-Week5-Practice/tree/main
+</aside>
+<aside> 💡
+What you will learn:
+* How to define tools and let the LLM choose which ones to call (function calling)
+* How to build a multi-turn tool calling loop where the LLM observes results and decides next steps
+* How to implement the ReAct (Reasoning + Acting) pattern for transparent, self-correcting agents
+* How to separate state, logic, and rendering for maintainable agentic UIs
+* How to add human-in-the-loop controls: approval gates and rejection with feedback </aside>
+Part 1: Function Calling
+From Hardcoded Pipelines to Tool Selection
+Function calling lets the LLM choose which tools to use and with what arguments, instead of following a fixed pipeline. Before applying this to our data analysis tool, let's understand how it works with a simple example.
+Defining Tools with Pydantic
+A tool definition tells the LLM what a tool does and what arguments it expects. The OpenAI SDK provides pydantic_function_tool to generate tool definitions from Pydantic models:
+from openai import pydantic_function_tool
+from pydantic import BaseModel, Field
+
+
+class Plus(BaseModel):
+    """Add two numbers together."""
+    a: float = Field(description="The first number")
+    b: float = Field(description="The second number")
+* The class docstring ("""Add two numbers together.""") becomes the tool's description
+* Each field becomes a parameter with its type and description
+Calling pydantic_function_tool(Plus) converts this Pydantic model into a JSON structure:
+{
+  "type": "function",
+  "function": {
+    "name": "Plus",
+    "strict": true,
+    "parameters": {
+      "description": "Add two numbers together.",
+      "properties": {
+        "a": { "description": "The first number", "title": "A", "type": "number" },
+        "b": { "description": "The second number", "title": "B", "type": "number" }
+      },
+      "required": ["a", "b"],
+      "title": "Plus",
+      "type": "object",
+      "additionalProperties": false
+    },
+    "description": "Add two numbers together."
+  }
+}
+You don't need to memorize this structure. It's a predefined format for communicating tool information between your code and the API. The key fields to understand are:
+* name: The class name, used as the tool identifier.
+* description: From the docstring. The LLM reads this to decide when to use the tool.
+* parameters: From the fields. The LLM uses this to construct valid arguments.
+Letting the LLM Choose Tools
+We've defined what tools are available. Now the question is: how do we let the LLM actually know about these tools so it can decide to use them?
+The answer is the tools parameter. When making an API call, we pass our tool definitions alongside the user's message:
+response = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[{"role": "user", "content": "What is 123789 multiplied by 4564560?"}],
+    tools=tools   # <-- this is what makes the LLM aware of our tools
+)
+By including tools=tools, the LLM can now see the name, description, and parameters of every tool we defined. It will read those descriptions and decide on its own whether any tool is relevant to the user's question.
+Reading the Model's Response
+Once the LLM responds, there are two possible outcomes:
+1. The model wants to use a tool (the response contains tool_calls)
+2. The model answers directly with text (no tools needed)
+We can check which case it is:
+message = response.choices[0].message
+
+
+if message.tool_calls:
+    tool_call = message.tool_calls[0]
+    print(tool_call.function.name)       # which tool it chose
+    print(tool_call.function.arguments)  # what arguments it wants to pass
+else:
+    print(message.content)              # direct text response
+Seeing It in Action
+Let's try sending three different queries to the same model with the same two tools (Plus and Multiply), and see how the model decides differently depending on the question.
+Query 1: "What is 123789 multiplied by 4564560?"
+Tool called: Multiply
+Arguments:   {"a":123789,"b":4564560}
+The model recognizes this as a multiplication problem, picks the Multiply tool, and extracts the two numbers as arguments.
+Query 2: "What is 123789 plus 4564560?"
+Tool called: Plus
+Arguments:   {"a":123789,"b":4564560}
+Same idea, different tool. The model picks Plus this time.
+Query 3: "What is the capital of France?"
+Response: The capital of France is Paris.
+This question has nothing to do with math. The model decides that neither Plus nor Multiply is relevant, so it skips the tools entirely and responds with plain text.
+Important: The Model Didn't Compute Anything
+Notice that the model only said what it wants to call and with what arguments. It did not actually perform the calculation. The response is a structured request, not an answer.
+Executing the Tool Call
+It's our job to take the model's response and actually execute it. First, we define the actual Python functions that do the work:
+def plus(a, b):
+    return a + b
+
+
+def multiply(a, b):
+    return a * b
+Then, when the model returns a tool call, we need to:
+1. Parse the arguments: They come back as a JSON string, so we use json.loads to convert them into a Python dictionary.
+2. Match the tool name: Check which function the model requested and call it with the parsed arguments.
+name = tool_call.function.name
+args = json.loads(tool_call.function.arguments)
+
+
+if name == "Multiply":
+    result = multiply(args["a"], args["b"])
+elif name == "Plus":
+    result = plus(args["a"], args["b"])
+This is an important distinction to keep in mind: the LLM chose the right tool and extracted the arguments from natural language, but Python is doing the actual computation. The model never calculated 123789 * 4564560 itself.
+________________
+
+
+Running this with the query "What is 123789 multiplied by 4564560?" produces:
+Tool called: Multiply
+Arguments:   {'a': 123789, 'b': 4564560}
+Result:      565042317840
+
+________________
+The Tool Calling Loop
+So far, we've been handling a single tool call: the model picks a tool, we execute it, and we print the result. But the model never saw that result. It was a one-shot interaction.
+What if a question requires multiple steps? Consider: What is ((123789 + 4564569) * 999999) + 333221?
+This needs three operations in sequence, where each step depends on the previous result:
+1. Plus(123789, 4564569) → 4688358
+2. Multiply(4688358, 999999) → 4688353311642
+3. Plus(4688353311642, 333221) → 4688353644863
+No single tool call can solve this. The model needs to call a tool, see its result, use that result to decide the next tool call, and repeat until it has the final answer. To make this possible, we need two things: a loop and a message history that accumulates results.
+How the Loop Works
+Here's the full loop:
+for i in range(10):  # safety limit to prevent infinite loops
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=messages,
+        tools=tools,
+        parallel_tool_calls=False
+    )
+
+
+    message = response.choices[0].message
+
+
+    if message.tool_calls:
+        messages.append(message)
+
+
+        for tool_call in message.tool_calls:
+            # execute and append result...
+            messages.append({
+                "role": "tool",
+                "content": str(result),
+                "tool_call_id": tool_call.id
+            })
+    else:
+        print(message.content)  # final answer
+        break
+Let's walk through what each part does:
+1. Send the full message history to the model.
+response = client.chat.completions.create(
+    ...
+    messages=messages,
+    ...
+)
+Every iteration calls the API with messages=messages. This list contains the original user question, every tool call the model has made so far, and every result we've sent back. The model sees the entire conversation history each time.
+2. If the model responds with tool_calls, execute and feed the result back.
+if message.tool_calls:
+    messages.append(message)
+
+
+    for tool_call in message.tool_calls:
+        # execute and append result...
+        messages.append({
+            "role": "tool",
+            "content": str(result),
+            "tool_call_id": tool_call.id
+        })
+We first append the model's own response to the history, then execute the tool and append its result with "role": "tool". Notice tool_call_id: each tool call the model makes has a unique ID, and we include it in the result so the API can match each result to the specific call that requested it. This is the key mechanism: by adding the result back to messages, the model can see what happened and use it to decide the next step.
+3. If the model responds with text, stop.
+else:
+    print(message.content)  # final answer
+    break
+When the model has enough information to answer, it returns plain text instead of a tool call. We print it and break out of the loop.
+Why parallel_tool_calls=False?
+You may have noticed another parameter in the API call:
+response = client.chat.completions.create(
+    ...
+    parallel_tool_calls=False
+)
+By default, the model is allowed to request multiple tool calls in a single turn. For example, if you asked "What is 2+3 and 4*5?", the model could call both Plus and Multiply at the same time, which would be efficient.
+But for our sequential calculation, that would be a problem. The model might try to call both Plus and Multiply at once, before knowing the result of the first step. Setting parallel_tool_calls=False forces the model to request one tool call at a time, ensuring each step completes before the next one begins.
+________________
+
+
+Running the loop with the query "What is ((123789 + 4564569) * 999999) + 333221?" produces:
+Step 1: Plus(123789, 4564569) = 4688358
+Step 2: Multiply(4688358, 999999) = 4688353311642
+Step 3: Plus(4688353311642, 333221) = 4688353644863
+
+
+Final answer: The result of ((123789 + 4564569) × 999999) + 333221 is 4,688,353,644,863.
+The model called three tools in sequence, using each result as input for the next step, then synthesized the final answer in plain text.
+________________
+
+
+Applying Tool Calling to Data Analysis
+So far, our tools have been simple arithmetic functions like Plus and Multiply. Now let's apply the same tool calling pattern to something more useful: letting the LLM write and execute Python code to analyze a real dataset.
+In this step, we introduce a new file, movie_tool.py, which contains the tool definition and the code execution logic. The main app.py imports from it and runs the same tool calling loop as before.
+Defining the Tool
+In movie_tool.py, we define a single tool called QueryMovieDB. Its only parameter is code, a string of Python code that will be executed against a movie dataset:
+class QueryMovieDB(BaseModel):
+    """Query the movie database using Python code."""
+    code: str = Field(description="Python code to execute")
+But there's a problem. The LLM needs to know what data is available in order to write meaningful code. What columns does the dataset have? What are their types? We solve this by embedding the dataset's schema directly into the tool description:
+QueryMovieDBTool = pydantic_function_tool(
+    QueryMovieDB,
+    description=f"Execute Python code to query the movie database. "
+                f"The DataFrame `df` is pre-loaded. "
+                f"Always use print() to output results.\\\\n\\\\n"
+                f"Schema:\\\\n{_schema}"
+)
+The description parameter here overrides the class docstring ("""Query the movie database using Python code.""") in the generated JSON. By embedding the schema, the LLM sees column names, data types, and sample rows as part of the tool definition itself, giving it everything it needs to write correct code.
+Executing the Code
+The query_movie_db() function works almost identically to the execute_code() function from Lecture 1: it wraps the LLM-generated code with imports, writes it to a file, and runs it as a subprocess. The one difference is what we return to the LLM:
+* Error (returncode != 0): return stderr, so the LLM can see what went wrong and fix it
+* Empty output: return "No output. Did you forget to use print()?" as a hint
+* Success: return stdout with the actual data
+We're not just returning success or failure. We're giving the LLM detailed feedback that it can use to improve its next attempt.
+Self-Correction in Action
+This feedback mechanism enables something powerful. Let's say we ask: "What are the top 5 highest-rated movies by IMDB Rating?"
+Step 1: QueryMovieDB
+  Code:   df.nlargest(5, 'IMDB Rating')[['Title', 'IMDB Rating']]
+  Result: No output. Did you forget to use print()?
+
+
+Step 2: QueryMovieDB
+  Code:   print(df.nlargest(5, 'IMDB Rating')[['Title', 'IMDB Rating']])
+  Result: (actual data showing top 5 movies)
+The model's first attempt generates code without print(), producing no output. Our tool returns a helpful hint, and the model sees this as the tool result in its message history. On its second attempt, it corrects itself by adding print() and successfully retrieves the data.
+This self-correcting behavior is the key advantage over the hardcoded pipeline we built previously, which would have simply shown the empty result and stopped. The tool calling loop lets the model observe its mistakes, adjust, and try again automatically.
+________________
+
+
+The complete terminal output for the example above looks like this:
+Step 1: QueryMovieDB
+  Code:   df.nlargest(5, 'IMDB Rating')[['Title', 'IMDB Rating']]
+  Result: No output. Did you forget to use print()?
+
+
+Step 2: QueryMovieDB
+  Code:   print(df.nlargest(5, 'IMDB Rating')[['Title', 'IMDB Rating']])
+  Result:                Title  IMDB Rating
+  706        Inception          9.1
+  639  The Dark Knight          8.9
+  183       Fight Club          8.8
+  151       The Matrix          8.7
+  708         The Town          8.7
+
+
+Final answer:
+The top 5 highest-rated movies by IMDB Rating are:
+1. Inception - 9.1
+2. The Dark Knight - 8.9
+3. Fight Club - 8.8
+4. The Matrix - 8.7
+5. The Town - 8.7
+The model recovered from its own mistake, produced real results, and summarized them in natural language.
+________________
+
+
+The ReAct Pattern
+In the tool calling loop we built, the model jumps straight from question to tool call without explaining why it's choosing that tool or what it plans to do. It works, but we have no visibility into the model's decision-making process.
+The ReAct (Reasoning + Acting) pattern addresses this by splitting each iteration into two explicit steps:
+1. Thought: The model reasons about the current situation and decides what to do next.
+2. Action: The model calls a tool, or provides the final answer.
+Structured Reasoning with Pydantic
+To make the model's reasoning explicit, we define a Reasoning model using Pydantic's structured output:
+class Reasoning(BaseModel):
+    reason: str = Field(
+        description="Your reasoning about what you know so far and what to do next"
+    )
+    use_tool: bool = Field(
+        description="True if you need to run code, False if you can give the final answer"
+    )
+    answer: Optional[str] = Field(
+        default=None,
+        description="Your final answer. Only provide when use_tool is False."
+    )
+There are three fields here:
+* reason: The model writes out its thinking. This makes each step transparent and debuggable.
+* use_tool: A boolean that explicitly tells us whether the model wants to call a tool or is ready to answer. This replaces the for i in range(10) safety limit from before. Instead of guessing when the model is done, we get a clear signal.
+* answer: The final answer, only provided when use_tool is False.
+The Loop: Two API Calls Per Iteration
+The ReAct loop makes two separate API calls each iteration. Here's the full structure:
+while True:
+    # 1. Reasoning: structured output, no tools
+    response = client.chat.completions.parse(
+        model="gpt-4o-mini",
+        messages=messages,
+        response_format=Reasoning,
+    )
+    reasoning = response.choices[0].message.parsed
+    messages.append({"role": "assistant", "content": reasoning.reason})
+
+
+    if not reasoning.use_tool:
+        print(reasoning.answer)
+        break
+
+
+    # 2. Acting: tools available
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=messages,
+        tools=[QueryMovieDBTool],
+        parallel_tool_calls=False
+    )
+
+
+    message = response.choices[0].message
+
+
+    if message.tool_calls:
+        messages.append(message)
+
+
+        for tool_call in message.tool_calls:
+            args = json.loads(tool_call.function.arguments)
+            result = query_movie_db(args["code"])
+
+
+            messages.append({
+                "role": "tool",
+                "content": result,
+                "tool_call_id": tool_call.id
+            })
+Let's break this down:
+1. The Reasoning call:
+response = client.chat.completions.parse(
+    model="gpt-4o-mini",
+    messages=messages,
+    response_format=Reasoning,
+)
+reasoning = response.choices[0].message.parsed
+This uses response_format=Reasoning with no tools parameter. The model is forced to output structured JSON with its reasoning and decision. We use client.chat.completions.parse instead of .create so the response is automatically parsed into our Reasoning model. If use_tool is False, we print the answer and stop.
+Appending the reasoning to the message history:
+messages.append({"role": "assistant", "content": reasoning.reason})
+This is crucial. The model's reasoning is added to the message history before the Acting call. This way, the Acting call can see the model's own plan and act on it.
+2. The Acting call:
+response = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=messages,
+    tools=[QueryMovieDBTool],
+    parallel_tool_calls=False
+)
+This uses tools=[QueryMovieDBTool] with no response_format. Because the model's reasoning is already in the message history, it acts on its own plan and calls the appropriate tool.
+3. Execute and feed results back:
+messages.append(message)
+
+
+for tool_call in message.tool_calls:
+    args = json.loads(tool_call.function.arguments)
+    result = query_movie_db(args["code"])
+
+
+    messages.append({
+        "role": "tool",
+        "content": result,
+        "tool_call_id": tool_call.id
+    })
+Same as the tool calling loop from before: we execute the tool, append the result to the message history, and the loop continues with the next Reasoning call.
+Thought, Action, Observation
+Let's see what this looks like in practice with the same question as before:
+Thought: I need to query the database for top-rated movies...
+
+
+Action: QueryMovieDB
+Code:   df.nlargest(5, 'IMDB Rating')[['Title', 'IMDB Rating']]
+Observation: No output. Did you forget to use print()?
+
+
+Thought: I forgot print(). Let me fix that...
+
+
+Action: QueryMovieDB
+Code:   print(df.nlargest(5, 'IMDB Rating')[['Title', 'IMDB Rating']])
+Observation: (actual data)
+
+
+Thought: I now have the data. → use_tool: false
+Answer: 1. Inception - 9.1 ...
+Each thought explains why the model is taking its next action. When something goes wrong (the missing print()), the model reasons about the error before retrying. This makes the entire process transparent and easy to follow.
+________________
+
+
+The complete terminal output for the ReAct loop looks like this:
+Thought: I need to query the movie database to find out which movies have the
+         top 5 highest IMDB ratings.
+
+
+Action: QueryMovieDB
+Code:   df.nlargest(5, 'IMDB Rating')
+Observation: No output. Did you forget to use print()?
+
+
+Thought: I forgot to print the results. I need to run the query again
+         with print().
+
+
+Action: QueryMovieDB
+Code:   print(df.nlargest(5, 'IMDB Rating'))
+Observation:
+            Title  Worldwide Gross  ...  IMDB Rating
+706        Inception        753830280  ...          9.1
+639  The Dark Knight       1022345358  ...          8.9
+183       Fight Club        100853753  ...          8.8
+151       The Matrix        460279930  ...          8.7
+708         The Town         33180607  ...          8.7
+
+
+Thought: I now have the data. I can provide the final answer.
+
+
+Answer:
+1. Inception - IMDB Rating: 9.1
+2. The Dark Knight - IMDB Rating: 8.9
+3. Fight Club - IMDB Rating: 8.8
+4. The Matrix - IMDB Rating: 8.7
+5. The Town - IMDB Rating: 8.7
+Compared to the tool calling loop output, each step now starts with a Thought that makes the model's reasoning visible. The Thought → Action → Observation cycle repeats until the model has enough information to produce a final Answer.
+Part 2: Building the UI
+Starting Point: Lecture 1 App with Tool Calling
+This is the Streamlit app from Lecture 1, with one key change: the hardcoded 3-step pipeline (generate_code → execute_code → interpret_result) has been replaced with the tool calling pattern we learned in Part 1.
+The Streamlit UI itself (sidebar filters, two-column layout, question input) is identical to Lecture 1. The difference is entirely in how the analysis is performed.
+What Changed in movie_tool.py
+The tool definition uses the same QueryMovieDB model and pydantic_function_tool pattern from Part 1, with two adaptations for the Streamlit context:
+1. Dynamic tool definition. In Part 1, the schema was computed once at module load time, because the data never changed. In Streamlit, the user can change sidebar filters on every interaction, so the tool definition needs to reflect the current filtered data. get_tools(filtered_df) rebuilds the tool definition each time:
+def get_tools(filtered_df):
+    schema = get_dataframe_schema(filtered_df)
+    return [pydantic_function_tool(
+        QueryMovieDB,
+        description=f"...Schema:\\\\n{schema}"
+    )]
+2. Filtered data parameter. query_movie_db(code, filtered_df) now takes the filtered DataFrame as a parameter and saves it to a temporary CSV, instead of reading movies.csv directly:
+def query_movie_db(code, filtered_df):
+    filtered_df.to_csv('temp_data.csv', index=False)
+    ...
+What Changed in app.py
+The only change is in col2, where the 3-step pipeline becomes a single tool call:
+tools = get_tools(filtered_df)
+
+
+response = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[
+        {"role": "system", "content": "..."},
+        {"role": "user", "content": user_question}
+    ],
+    tools=tools
+)
+If the model returns tool_calls, we execute query_movie_db and display the generated code and result. If not, we show the model's direct text response.
+Note that this is still a single round of tool calling. If the generated code fails, the user sees the error. The model cannot retry or self-correct yet.
+Adding the ReAct Loop to the UI
+Now we integrate the ReAct pattern from Part 1, giving the model the ability to reason, retry, and self-correct.
+Designing the Layout
+The ReAct loop produces multiple rounds of Thought, Action, and Observation before reaching a final answer. We need to display all of this in a way that isn't overwhelming. Here's the plan:
+1. st.container(height=600): The reasoning trace can get long, so we wrap everything in a fixed-height scrollable container to prevent the results panel from growing endlessly.
+2. st.expander("Agent Reasoning Trace"): Inside the container, the step-by-step trace (Thought/Action/Observation) goes into a collapsible section. It stays open during execution so the user can watch the progress, but can be collapsed afterwards.
+3. Final answer outside the expander: The model's final answer is displayed below the expander, so the user can always see it without scrolling through the trace.
+The Code
+The Reasoning model and the while True loop structure are the same as Part 1. The difference is that each step is now rendered with Streamlit components:
+results_container = st.container(height=600)
+
+
+with results_container:
+    with st.expander("Agent Reasoning Trace", expanded=True):
+        while True:
+            # Reasoning call...
+            st.markdown(f"**Thought:** {reasoning.reason}")
+
+
+            if not reasoning.use_tool:
+                break
+
+
+            # Acting call...
+            if message.tool_calls:
+                for tool_call in message.tool_calls:
+                    ...
+                    st.markdown(f"**Action:** `{name}`")
+                    st.code(args["code"], language='python')
+                    st.markdown("**Observation:**")
+                    st.code(result, language="text")
+                    st.divider()
+
+
+    st.write("**Answer:**")
+    st.write(reasoning.answer)
+Each iteration renders three things inside the expander:
+* Thought: the model's reasoning about what to do next
+* Action: the tool it called and the code it generated
+* Observation: the execution result (or error message)
+When the loop ends (the model sets use_tool to False), the final answer appears below the expander, inside the container but outside the collapsible trace.
+Separating State, Logic, and UI
+The Problem
+This works, but state updates, API calls, and UI rendering are all interleaved inside a single while True loop:
+with st.expander("Agent Reasoning Trace", expanded=True):
+    while True:
+        response = client.chat.completions.parse(...)   # logic
+        st.markdown(f"**Thought:** {reasoning.reason}")  # UI
+        response = client.chat.completions.create(...)   # logic
+        result = query_movie_db(args["code"], ...)       # logic
+        st.code(args["code"], language='python')          # UI
+        messages.append(...)                              # state
+This works, but it's fragile. Want to add a new tool? You have to modify the loop. Want to change how results are displayed? You have to touch the same block that handles API calls. Every new feature means rewriting this tightly coupled code.
+To be fair, this coupling is by design in Streamlit. It's what makes simple UIs so easy to build. For example, our sidebar filters create UI widgets and filter data in the same block, and that works great. But for agentic AI interactions with multiple phases, retries, and growing complexity, keeping everything in one loop becomes unmanageable. It helps to separate concerns explicitly.
+We do this by extracting the entire col2 block into a new file, agent_panel.py, and splitting it into three parts: state, logic, and rendering.
+What Does "Separating State, Logic, and UI" Mean?
+Before looking at the code, let's clarify what these three concerns are:
+* State: The data that describes the current situation. What phase is the agent in? What messages have been exchanged? What events have occurred? State is stored and updated, but it doesn't do any computation or draw anything on screen.
+* Logic: The part that changes the state. It makes API calls, executes tools, and decides what phase to move to next. It reads the current state, does work, and writes new state. But it never touches the UI.
+* Rendering: The part that reads the state and draws it on screen. It decides what to show based on the current phase and events. But it never makes API calls or changes the state.
+The key idea is that each part only does its own job. Logic doesn't render. Rendering doesn't mutate state. This makes each piece simple and independently modifiable.
+State
+All agent data lives in st.session_state, which persists across reruns. We access it through two simple helpers:
+def get_state(key):
+    return st.session_state.get(key, DEFAULT_STATE[key])
+
+
+def set_state(key, value):
+    st.session_state[key] = value
+The agent tracks its current phase and four pieces of data:
+DEFAULT_STATE = {
+    "agent_phase": "idle",
+    "agent_events": [],
+    "agent_messages": [],
+    "agent_tools": [],
+    "agent_df": None,
+}
+* agent_phase: Where the agent is in its lifecycle (idle, thinking, acting, done).
+* agent_events: A list of events (thoughts, actions, answers) used for rendering.
+* agent_messages: The message history sent to the API.
+* agent_tools: The tool definitions.
+* agent_df: The filtered DataFrame.
+When the user clicks Analyze, restart_agent() resets all of these and sets the phase to "thinking" to kick off the loop:
+def restart_agent(user_question, filtered_df):
+    set_state("agent_phase", "thinking")
+    set_state("agent_events", [])
+    set_state("agent_messages", [
+        {"role": "system", "content": "..."},
+        {"role": "user", "content": user_question},
+    ])
+    set_state("agent_tools", get_tools(filtered_df))
+    set_state("agent_df", filtered_df)
+Logic
+run_step() checks the current phase and does exactly one thing per call:
+When phase == "thinking":
+response = client.chat.completions.parse(
+    model="gpt-4o-mini", messages=messages, response_format=Reasoning,
+)
+reasoning = response.choices[0].message.parsed
+
+
+if reasoning.use_tool:
+    get_state("agent_events").append({"type": "thought", ...})
+    set_state("agent_phase", "acting")
+else:
+    get_state("agent_events").append({"type": "answer", ...})
+    set_state("agent_phase", "done")
+Call the reasoning API. If the model wants a tool, record the thought as an event and move to "acting". If not, record the answer and move to "done".
+When phase == "acting":
+response = client.chat.completions.create(
+    model="gpt-4o-mini", messages=messages, tools=tools, ...
+)
+for tc in msg.tool_calls:
+    result = query_movie_db(args["code"], df)
+    get_state("agent_events").append({"type": "action", ...})
+
+
+set_state("agent_phase", "thinking")
+Call the tool API, execute the code, record the action as an event, and move back to "thinking". The phase transitions form a simple cycle: thinking → acting → thinking → ... → done.
+Rendering
+render_panel() reads agent_phase and renders accordingly. It never makes API calls or mutates state:
+def render_panel():
+    st.subheader("Analysis Results")
+    container = st.container(height=600)
+    with container:
+        phase = get_state("agent_phase")
+
+
+        if phase == "idle":
+            st.info("Enter a question and click 'Analyze' to see results.")
+
+
+        elif phase in ("thinking", "acting"):
+            with st.expander("Agent Reasoning Trace", expanded=True):
+                render_events()
+            st.spinner("Agent is thinking...")
+
+
+        elif phase == "done":
+            with st.expander("Agent Reasoning Trace", expanded=False):
+                render_events()
+            events = get_state("agent_events")
+            if events and events[-1].get("answer"):
+                st.write("**Answer:**")
+                st.write(events[-1]["answer"])
+* idle: A placeholder message.
+* thinking / acting: The event trace so far (expanded) with a spinner.
+* done: The event trace (collapsed by default) and the final answer below it.
+render_events() iterates over the agent_events list and draws each one based on its type:
+def render_events():
+    for event in get_state("agent_events"):
+        if event["type"] == "thought":
+            st.markdown(f"**Thought:** {event['thought']}")
+        elif event["type"] == "action":
+            st.markdown(f"**Action:** `{event['name']}`")
+            st.code(event["code"], language="python")
+            st.markdown("**Observation:**")
+            st.code(event["result"], language="text")
+            st.divider()
+        elif event["type"] == "answer":
+            st.markdown(f"**Thought:** {event['thought']}")
+Notice the pattern here: render_panel() handles the overall layout, and delegates the event rendering to render_events(). This is a useful pattern. You can break UI code into small functions that each render one piece, then compose them together in a parent function. It keeps each function focused and easy to modify independently.
+Putting It All Together: agent_panel()
+Now that we've seen each piece, here's how they're orchestrated. In app.py, the right column becomes a single function call. We pass in everything the agent panel needs to know about the current context: the API client, whether the user clicked Analyze, what question they asked, and the current filtered data:
+with col2:
+    agent_panel(client, analyze_button, user_question, filtered_df)
+Inside agent_panel(), the three concerns run in order:
+def agent_panel(client, analyze_button, user_question, filtered_df):
+    if analyze_button and user_question:
+        restart_agent(user_question, filtered_df)   # 1. state
+
+
+    render_panel()                                   # 2. rendering
+
+
+    if get_state("agent_phase") in ("thinking", "acting"):
+        run_step(client)                             # 3. logic
+        st.rerun()
+1. restart_agent() (State): If the user clicked Analyze, reset all state and set the phase to "thinking". If the user hasn't clicked yet, the state remains at its default, which is "idle".
+2. render_panel() (Rendering): Look at the current state and draw the appropriate UI.
+3. run_step() (Logic): If the agent is still working, advance it by one step and update the state.
+Why st.rerun()?
+Notice the st.rerun() after run_step(). This is how we replace the while True loop.
+In the previous step, the loop ran inside a single script execution: call API, render, call API, render, repeat. Now, each iteration is a separate run of the entire script. Here's the flow:
+1. Script runs → render_panel() draws the current state → run_step() advances one step → st.rerun()
+2. Script runs again from the top → render_panel() draws the updated state → run_step() advances another step → st.rerun()
+3. This continues until the agent reaches the "done" phase, at which point run_step() is not called and the script stops rerunning.
+This might seem like extra complexity, but each rerun follows the same simple sequence: reset if needed, render, step, rerun. And as we'll see next, this separation makes it easy to add new features without rewriting existing code.
+Adding a Chart Tool
+Let's put that to the test by adding a second tool: one that lets the agent create chart visualizations.
+New File: chart_tool.py
+Vega-Lite is a widely used standard for describing charts as JSON. You don't need to know the details of how it works. The important thing is: if the LLM generates a valid JSON spec, Streamlit can turn it directly into a chart. Just like our code execution tool, an invalid spec will produce an error, but a correct one renders a visualization.
+We implement this as a new tool following the same pattern as movie_tool.py:
+class CreateChart(BaseModel):
+    """Create a chart visualization using a Vega-Lite specification."""
+    vega_lite_spec: str = Field(
+        description="A complete Vega-Lite JSON specification string, "
+                    "including inline data under 'data.values'."
+    )
+The tool takes one parameter: a JSON string. We validate it using altair, a Python library that ships with Streamlit, and return a result string to the agent:
+def validate_chart(vega_lite_spec):
+    try:
+        spec = json.loads(vega_lite_spec)
+    except json.JSONDecodeError as e:
+        return None, f"Invalid JSON: {e}"
+
+
+    try:
+        alt.Chart.from_dict(spec)
+        return spec, "Valid Vega-Lite specification."
+    except Exception as e:
+        return None, f"Invalid Vega-Lite specification: {e}"
+If the spec is valid, we return it for rendering. If not, the error message goes back to the agent as its observation, giving it a chance to fix the spec and retry.
+Changes to app.py
+We add a checkbox that lets the user opt into chart generation. The show_chart value is passed to agent_panel():
+show_chart = st.checkbox("Show chart")
+...
+agent_panel(client, analyze_button, user_question, filtered_df, show_chart)
+Changes to agent_panel.py
+Because we separated concerns above, each layer gets a small, focused addition.
+State: One new key to store validated chart specs. When show_chart is True, restart_agent() adds the chart tool to the tool list and nudges the system prompt to tell the model to create a visualization. Without this prompt nudge, the model often computes the data but doesn't think to visualize it:
+DEFAULT_STATE = {
+    ...
+    "agent_chart_specs": [],
+}
+
+
+def restart_agent(user_question, filtered_df, show_chart=False):
+    ...
+    if show_chart:
+        tools.append(get_chart_tool())
+        system_content += " After computing the data, create a chart..."
+Logic: The acting phase now needs to handle two different tools. Recall from Part 1 that the tool's name comes from the Pydantic class name. We use tc.function.name to dispatch to the right handler:
+for tc in msg.tool_calls:
+    args = json.loads(tc.function.arguments)
+
+
+    if tc.function.name == "QueryMovieDB":
+        result = query_movie_db(args["code"], df)
+        get_state("agent_events").append({"type": "action", ...})
+    elif tc.function.name == "CreateChart":
+        spec, result = validate_chart(args["vega_lite_spec"])
+        if spec:
+            get_state("agent_chart_specs").append(spec)
+        get_state("agent_events").append({"type": "chart", ...})
+Valid specs are stored in agent_chart_specs for rendering later. Invalid specs produce an error message that goes back to the model so it can fix the spec on its next turn.
+Rendering: render_events() handles the new "chart" event type by displaying the spec as JSON:
+elif event["type"] == "chart":
+    st.markdown(f"**Action:** `{event['name']}`")
+    st.code(event["spec_str"], language="json")
+    st.markdown("**Observation:**")
+    st.code(event["result"], language="text")
+And render_panel() displays the collected charts below the answer when the agent is done:
+elif phase == "done":
+    ...
+    for spec in get_state("agent_chart_specs"):
+        st.vega_lite_chart(spec, use_container_width=True)
+This is the payoff of the separation we did above. Adding a completely new tool required small, isolated changes to each layer, without rewriting any existing logic.
+Part 3: Human-in-the-Loop
+Adding an Approval Step
+Up until now, the agent executes tools automatically. It decides to run code and runs it immediately. But in real-world applications, you often want a human to review what the agent is about to do before it happens, especially when the tool has side effects like writing to a database, sending an email, or spending money.
+We add an approval step: before each tool execution, the agent pauses and shows the user what it wants to do. The user clicks Approve to let it proceed.
+A New Phase: awaiting_approval
+The state machine so far has been:
+idle → thinking ↔ acting → done
+We insert a new phase between acting and the actual tool execution:
+idle → thinking → acting → awaiting_approval → thinking → ... → done
+The key change is that the acting phase no longer executes the tool. Instead, it stores the proposed tool calls in state and moves to awaiting_approval. The tool only runs when the user clicks Approve.
+Changes to agent_panel.py
+Again, each layer gets a focused change.
+State: One new key to hold the pending message while waiting for approval:
+DEFAULT_STATE = {
+    ...
+    "agent_pending_message": None,
+}
+Logic: Here is the full logic layer. run_step() changes its acting branch, and a new execute_pending_tools() function is added:
+def run_step(client):
+    phase = get_state("agent_phase")
+    messages = get_state("agent_messages")
+
+
+    if phase == "thinking":
+        ...                         # unchanged from before
+
+
+    elif phase == "acting":
+        tools = get_state("agent_tools")
+        response = client.chat.completions.create(
+            model="gpt-4o-mini", messages=messages,
+            tools=tools, parallel_tool_calls=False,
+        )
+        msg = response.choices[0].message
+
+
+        if not msg.tool_calls:
+            set_state("agent_phase", "done")
+            return
+
+
+        set_state("agent_pending_message", msg)
+        set_state("agent_phase", "awaiting_approval")
+
+
+def execute_pending_tools():
+    messages = get_state("agent_messages")
+    df = get_state("agent_df")
+    pending_msg = get_state("agent_pending_message")
+
+
+    messages.append(pending_msg)
+    for tc in pending_msg.tool_calls:
+        args = json.loads(tc.function.arguments)
+        if tc.function.name == "QueryMovieDB":
+            result = query_movie_db(args["code"], df)
+            ...
+        elif tc.function.name == "CreateChart":
+            spec, result = validate_chart(args["vega_lite_spec"])
+            ...
+        messages.append({"role": "tool", "content": result, "tool_call_id": tc.id})
+
+
+    set_state("agent_pending_message", None)
+    set_state("agent_phase", "thinking")
+Previously, the acting branch executed tools immediately and looped back to thinking. Now it just stores the message and pauses:
+set_state("agent_pending_message", msg)
+set_state("agent_phase", "awaiting_approval")
+The actual execution moves into execute_pending_tools(). We don't need to store tool calls separately since they're accessible as pending_msg.tool_calls:
+pending_msg = get_state("agent_pending_message")
+
+
+messages.append(pending_msg)
+for tc in pending_msg.tool_calls:
+This is the same execution code as before, just moved into its own function that only runs after the user approves.
+Rendering: Here is the full rendering layer:
+def render_pending_approval():
+    st.warning("The agent wants to perform the following action:")
+    for tc in get_state("agent_pending_message").tool_calls:
+        args = json.loads(tc.function.arguments)
+        st.markdown(f"**Tool:** `{tc.function.name}`")
+        if tc.function.name == "QueryMovieDB":
+            st.code(args["code"], language="python")
+        elif tc.function.name == "CreateChart":
+            st.code(args["vega_lite_spec"], language="json")
+
+
+def render_panel():
+    st.subheader("Analysis Results")
+    container = st.container(height=600)
+    approved = False
+    with container:
+        phase = get_state("agent_phase")
+
+
+        if phase == "idle":
+            ...                     # unchanged
+        elif phase in ("thinking", "acting"):
+            ...                     # unchanged
+        elif phase == "awaiting_approval":
+            with st.expander("Agent Reasoning Trace", expanded=True):
+                render_events()
+            render_pending_approval()
+            approved = st.button("Approve", type="primary", use_container_width=True)
+        elif phase == "done":
+            ...                     # unchanged
+
+
+    return approved
+A new helper render_pending_approval() displays a warning with the proposed tool call and its arguments, so the user can see exactly what code the agent wants to run before approving.
+render_panel() now initializes approved = False at the top and returns it at the end. The Approve button only exists inside the awaiting_approval branch:
+elif phase == "awaiting_approval":
+    ...
+    approved = st.button("Approve", type="primary", use_container_width=True)
+So in all other phases, approved stays False. It only becomes True when the user actually clicks the button.
+Lifecycle: Here is the full lifecycle:
+def agent_panel(client, analyze_button, user_question, filtered_df, show_chart=False):
+    if analyze_button and user_question:
+        restart_agent(user_question, filtered_df, show_chart)
+
+
+    approved = render_panel()
+
+
+    phase = get_state("agent_phase")
+    if phase in ("thinking", "acting"):
+        run_step(client)
+        st.rerun()
+    elif phase == "awaiting_approval" and approved:
+        execute_pending_tools()
+        st.rerun()
+render_panel() runs every time the page renders, regardless of the current phase. As we saw above, approved is only True when the user clicks the Approve button during awaiting_approval. One new elif branch handles this:
+elif phase == "awaiting_approval" and approved:
+    execute_pending_tools()
+    st.rerun()
+Notice how naturally this fits into the existing structure. We added one new phase, split the acting logic into "propose" and "execute", added one render function, and added one lifecycle branch. Everything else remains unchanged, including app.py, chart_tool.py, and movie_tool.py.
+Rejecting with Feedback
+The user can now approve actions, but what if the agent's plan looks wrong? Maybe it's querying the wrong column, or using the wrong aggregation. The user needs a way to say "no" and explain why, so the agent can adjust its approach.
+We add a Reject button alongside Approve. When the user rejects, they can type feedback explaining what the agent should do differently. The agent receives this feedback and tries again.
+A New Phase: awaiting_feedback
+The state machine so far has one path from awaiting_approval:
+... → awaiting_approval → (Approve) → thinking → ...
+We add a second path:
+... → awaiting_approval → (Approve) → thinking → ...
+                        → (Reject)  → awaiting_feedback → (Submit) → thinking → ...
+Both paths return to thinking. The difference is what the agent sees as its tool result: either the actual execution output (Approve), or a rejection message with the user's feedback (Reject).
+Changes to agent_panel.py
+Logic: Here is the full logic layer. execute_pending_tools() is unchanged, and a new reject_pending_tools() function is added:
+def execute_pending_tools():
+    ...                             # unchanged from before
+
+
+def reject_pending_tools(feedback):
+    messages = get_state("agent_messages")
+    pending_msg = get_state("agent_pending_message")
+
+
+    rejection_msg = "User rejected this action."
+    if feedback:
+        rejection_msg += f" User feedback: {feedback}"
+    else:
+        rejection_msg += " Try a different approach."
+
+
+    messages.append(pending_msg)
+    for tc in pending_msg.tool_calls:
+        get_state("agent_events").append({
+            "type": "rejected", "name": tc.function.name,
+            "feedback": feedback,
+        })
+        messages.append({
+            "role": "tool",
+            "content": rejection_msg,
+            "tool_call_id": tc.id,
+        })
+
+
+    set_state("agent_pending_message", None)
+    set_state("agent_phase", "thinking")
+The OpenAI API requires every tool call to have a corresponding tool result message. Instead of the actual execution result, we send the rejection as the tool result:
+messages.append({
+    "role": "tool",
+    "content": rejection_msg,
+    "tool_call_id": tc.id,
+})
+The agent receives this rejection as its "observation" and reasons about it in the next Thought step. For example, if the user rejects a query and says "use IMDB Rating, not Rating", the agent sees that feedback and retries with the corrected column name.
+Rendering: Here is the full rendering layer:
+def render_pending_approval():
+    st.warning("The agent wants to perform the following action:")
+    for tc in get_state("agent_pending_message").tool_calls:
+        args = json.loads(tc.function.arguments)
+        st.markdown(f"**Tool:** `{tc.function.name}`")
+        if tc.function.name == "QueryMovieDB":
+            st.code(args["code"], language="python")
+        elif tc.function.name == "CreateChart":
+            st.code(args["vega_lite_spec"], language="json")
+
+
+    btn_col1, btn_col2 = st.columns(2)
+    with btn_col1:
+        approved = st.button("Approve", type="primary", use_container_width=True)
+    with btn_col2:
+        rejected = st.button("Reject", use_container_width=True)
+    return approved, rejected
+
+
+def render_pending_feedback():
+    feedback = st.text_input(
+        "Why are you rejecting? Tell the agent what to do instead:",
+        key="reject_feedback",
+    )
+    submitted = st.button("Submit Rejection", use_container_width=True)
+    return submitted, feedback
+
+
+def render_panel():
+    st.subheader("Analysis Results")
+    container = st.container(height=600)
+    actions = {}
+    with container:
+        phase = get_state("agent_phase")
+
+
+        if phase == "idle":
+            ...                     # unchanged
+        elif phase in ("thinking", "acting"):
+            ...                     # unchanged
+        elif phase == "awaiting_approval":
+            with st.expander("Agent Reasoning Trace", expanded=True):
+                render_events()
+            approved, rejected = render_pending_approval()
+            actions = {"approved": approved, "rejected": rejected}
+        elif phase == "awaiting_feedback":
+            with st.expander("Agent Reasoning Trace", expanded=True):
+                render_events()
+            submitted, feedback = render_pending_feedback()
+            actions = {"submitted": submitted, "feedback": feedback}
+        elif phase == "done":
+            ...                     # unchanged
+
+
+    return actions
+render_pending_approval() now shows two buttons side by side and returns both values:
+btn_col1, btn_col2 = st.columns(2)
+with btn_col1:
+    approved = st.button("Approve", type="primary", use_container_width=True)
+with btn_col2:
+    rejected = st.button("Reject", use_container_width=True)
+return approved, rejected
+A new render_pending_feedback() shows a text input where the user can explain why they're rejecting.
+render_panel() now returns an actions dictionary instead of a single boolean, since there are multiple possible user interactions depending on the phase. In awaiting_approval, it collects Approve/Reject. In awaiting_feedback, it collects the feedback text and Submit button. In all other phases, actions stays as an empty {}:
+actions = {}
+...
+    elif phase == "awaiting_approval":
+        ...
+        actions = {"approved": approved, "rejected": rejected}
+    elif phase == "awaiting_feedback":
+        ...
+        actions = {"submitted": submitted, "feedback": feedback}
+...
+return actions
+render_events() also handles the new "rejected" event type, displaying the rejection and the user's feedback in the trace.
+Lifecycle: Here is the full lifecycle:
+def agent_panel(client, analyze_button, user_question, filtered_df, show_chart=False):
+    if analyze_button and user_question:
+        restart_agent(user_question, filtered_df, show_chart)
+
+
+    actions = render_panel()
+
+
+    phase = get_state("agent_phase")
+    if phase in ("thinking", "acting"):
+        run_step(client)
+        st.rerun()
+    elif phase == "awaiting_approval":
+        if actions.get("approved"):
+            execute_pending_tools()
+            st.rerun()
+        elif actions.get("rejected"):
+            set_state("agent_phase", "awaiting_feedback")
+            st.rerun()
+    elif phase == "awaiting_feedback" and actions.get("submitted"):
+        reject_pending_tools(actions.get("feedback", ""))
+        st.rerun()
+The awaiting_approval branch now splits into two sub-branches. If the user clicks Approve, tools execute as before. If they click Reject, the phase moves to awaiting_feedback:
+elif phase == "awaiting_approval":
+    if actions.get("approved"):
+        execute_pending_tools()
+        st.rerun()
+    elif actions.get("rejected"):
+        set_state("agent_phase", "awaiting_feedback")
+        st.rerun()
+A new branch handles the feedback submission. When the user types their feedback and clicks Submit, reject_pending_tools() sends the rejection message to the model and the agent resumes from thinking:
+elif phase == "awaiting_feedback" and actions.get("submitted"):
+    reject_pending_tools(actions.get("feedback", ""))
+    st.rerun()
+Once again, app.py, chart_tool.py, and movie_tool.py are completely unchanged. The entire reject-with-feedback feature lives in agent_panel.py: one new logic function, two new render functions, and two new lifecycle branches.
+Building a Multi-Agent Decision Support App
+⭐ You can better see the step-by-step changes and the complete codebase for this article at https://bchaicourse.github.io/HAI2026-Interactive-Slides/lecture3 ⭐
+This post continues from Building an Interactive Data Analysis Tool (Part 2). In that post, we built an agentic data analysis tool using the raw OpenAI API: defining tools, building a tool-calling loop, implementing the ReAct pattern for self-correcting agents, and adding human-in-the-loop controls. Everything was powered by a single agent making sequential tool calls.
+In this post, we move from a single agent to multi-agent systems. Instead of one LLM handling everything, multiple specialized agents collaborate, each with its own role and expertise. We use AutoGen, an open-source framework by Microsoft Research, to orchestrate these agents and then build a full web app around them.
+<aside> 🛠
+What we will build: A Decision Support web app in Streamlit where multiple agents work together to help users think through decisions. The app features a configurable pipeline of specialized agents (clarifier, researcher, debaters, advisor), supports multiple orchestration patterns (round-robin, LLM-based routing, swarm handoffs), and lets you edit agents and pipeline structure directly from the browser.
+You can find the 📦 complete implementation 📦 at the github link below:
+https://github.com/bchaicourse/HAI2026-Week9-Practice
+</aside>
+<aside> 💡
+What you will learn:
+* How to create agents and give them tools using AutoGen
+* How to orchestrate multi-agent teams with RoundRobinGroupChat, SelectorGroupChat, and Swarm
+* How to nest teams inside other teams using SocietyOfMindAgent
+* How to build a multi-agent pipeline in Streamlit
+* How to make agents and pipeline structure configurable from the browser </aside>
+Part 1: Multi-Agent Systems
+Step 1, Setup: Install AutoGen
+Building an agent from the raw OpenAI API means writing a lot of plumbing: checking for tool_calls, executing functions, appending results to messages, and looping until the model is done. This works, but every piece is yours to manage.
+AutoGen is an open-source multi-agent framework developed by Microsoft Research. It wraps the LLM API, manages conversation history, executes tools, and provides building blocks for connecting multiple agents together.
+Note: Microsoft's active development has moved to a newer project called Agent Framework. AutoGen still receives minimal bug fixes but is no longer the primary focus. We use AutoGen in this course because Agent Framework is still in its early stages.
+AutoGen's Package Structure
+AutoGen is split into three packages, each with a different role:
+* autogen-agentchat: High-level building blocks for creating agents and orchestrating multi-agent teams
+* autogen-core: Lower-level primitives shared across the framework (e.g., tool definitions)
+* autogen-ext: Integrations with external services (e.g., OpenAI, Azure)
+You'll import from all three throughout this lecture. When you see an import like from autogen_agentchat.agents import AssistantAgent, the first part (autogen_agentchat) tells you which package it comes from.
+Install Dependencies
+pip install autogen-agentchat autogen-ext[openai] python-dotenv
+autogen-core is installed automatically as a dependency of autogen-agentchat.
+Set Up Your API Key
+Create a .env file:
+OPENAI_API_KEY=sk-proj-...
+Verify the Installation
+from dotenv import load_dotenv
+import os
+
+
+from autogen_ext.models.openai import OpenAIChatCompletionClient
+
+
+load_dotenv()
+client = OpenAIChatCompletionClient(
+    model="gpt-4o-mini",
+    api_key=os.getenv("OPENAI_API_KEY"),
+)
+Expected output:
+AutoGen installed successfully!
+Model: gpt-4o-mini
+Step 2: Creating Your First Agent
+Let's create a single agent and give it a task. In AutoGen, AssistantAgent (from autogen-agentchat) is the basic building block for this. It wraps an LLM client with a name and a system prompt.
+from autogen_agentchat.agents import AssistantAgent
+
+
+agent = AssistantAgent(
+    "TechExplainer",
+    model_client=client,
+    system_message="You are an expert at explaining technical concepts in simple terms. Keep answers to 2-3 sentences.",
+)
+The setup is similar to a raw OpenAI API call:
+response = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "What is a multi-agent system?"}
+    ]
+)
+The difference is what happens when you call run(). Instead of making a single API call, run() handles the full interaction, including multiple rounds if tools are involved:
+result = await agent.run(task="What is a multi-agent system?")
+Async by Default
+Notice the await keyword. AutoGen is async-first: all run() calls use await, and your entry point uses asyncio.run(). This is because multi-agent workflows naturally involve waiting (for API responses, tool execution, etc.), and async makes it easy to run agents concurrently.
+import asyncio
+
+
+async def main():
+    # ... agent creation and run() calls go here
+
+
+asyncio.run(main())
+Reading the Result
+run() returns a TaskResult containing a .messages list of everything that happened during the run. Let's print all messages to see the full picture:
+Let's print all messages to see what's inside:
+result = await agent.run(task="What is a multi-agent system?")
+
+
+for msg in result.messages:
+    print(msg)
+
+source='user' content='What is a multi-agent system?' type='TextMessage' ...
+source='TechExplainer' content='A multi-agent system is a network of ...' type='TextMessage' ...
+The .messages list contains the full conversation. The first message (source='user') is the task we passed in, and the second (source='TechExplainer') is the agent's response. For a simple call like this there are only two, but when tools or multiple agents are involved, this list grows with each interaction.
+To extract just the final answer:
+final_answer = result.messages[-1].content
+print(final_answer)
+Expected output (will vary):
+A multi-agent system is a network of multiple autonomous entities, called
+agents, that work together to achieve specific goals or solve problems. ...
+Step 3: Adding Tools to an Agent
+So far, our agent can only generate text. To let it perform actual computation, we give it tools. With the raw OpenAI API, this requires defining Pydantic models, converting them with pydantic_function_tool(), and writing the tool-calling loop yourself. AutoGen simplifies this: you wrap a plain Python function with FunctionTool (from autogen-core), and the framework handles the rest.
+from autogen_core.tools import FunctionTool
+
+
+def multiply(a: int, b: int) -> int:
+    """Multiply two numbers."""
+    return a * b
+
+
+multiply_tool = FunctionTool(multiply, description="Multiply two numbers")
+Pass the tool to an agent via the tools parameter. We also set reflect_on_tool_use=True, which tells the agent to send the tool result back to the LLM so it can interpret it and decide what to do next. Without this, the agent would return the raw tool result and stop.
+agent = AssistantAgent(
+    "Calculator",
+    model_client=client,
+    tools=[multiply_tool],
+    system_message="Use the provided tools to solve math problems.",
+    reflect_on_tool_use=True,
+)
+Note: The default for reflect_on_tool_use is False because AutoGen is designed primarily for multi-agent teams, where the team orchestrator controls the flow between agents. When using a single agent standalone, set it to True so the agent can complete the full task on its own.
+Let's test with a multiplication no LLM could do in its head:
+result = await agent.run(task="What is 4839281574 * 7291048365?")
+for msg in result.messages:
+    print(msg)
+New Message Types
+With tools, result.messages now contains new types beyond TextMessage:
+source='user' content='What is 4839281574 * 7291048365?' type='TextMessage'
+source='Calculator' content=[FunctionCall(arguments='{"a":4839281574,"b":7291048365}', name='multiply')] type='ToolCallRequestEvent'
+source='Calculator' content=[FunctionExecutionResult(content='35283436007887326510', name='multiply')] type='ToolCallExecutionEvent'
+source='Calculator' content='The product of 4839281574 and 7291048365 is 35,283,436,007,887,326,510.' type='TextMessage'
+* ToolCallRequestEvent: The agent requests a tool call (which function, with what arguments)
+* ToolCallExecutionEvent: The result of executing the tool
+* The final TextMessage: The agent interpreted the tool result and produced a natural language answer. This is because reflect_on_tool_use=True sends the result back to the LLM for one more round.
+Step 4: Multiple Agents, Different Perspectives
+An agent's behavior is defined by its system_message. By creating multiple agents with different system messages, we can get different perspectives on the same question.
+optimist = AssistantAgent(
+    "Optimist",
+    model_client=client,
+    system_message=(
+        "You always see the bright side. Give 2-3 bullet points on why "
+        "this is a great idea. Be brief."
+    ),
+)
+
+
+pessimist = AssistantAgent(
+    "Pessimist",
+    model_client=client,
+    system_message=(
+        "You always see the risks and downsides. Give 2-3 bullet points on "
+        "what could go wrong. Be brief."
+    ),
+)
+We run each agent separately on the same question:
+question = "I'm thinking about quitting my job to start a bakery."
+
+
+result = await optimist.run(task=question)
+print(result.messages[-1].content)
+
+
+result = await pessimist.run(task=question)
+print(result.messages[-1].content)
+Expected output (will vary):
+--- Optimist ---
+- **Pursuing Passion**: Starting a bakery allows you to turn your love for
+  baking into a fulfilling career...
+- **Creative Freedom**: You'll have the opportunity to express your creativity...
+
+
+--- Pessimist ---
+- **Financial Instability**: Transitioning to a bakery may lead to unpredictable
+  income...
+- **Market Competition**: The bakery industry can be highly competitive...
+The Problem
+This works, but each agent runs in isolation. The Pessimist doesn't know what the Optimist said. If we want agents to build on each other's analysis, take turns in a conversation, or coordinate their responses, we need orchestration patterns that define how agents interact.
+Step 5: RoundRobinGroupChat
+AutoGen provides teams, predefined orchestration patterns that manage how multiple agents interact. There are several team types, each with a different communication strategy. We'll start with the simplest: RoundRobinGroupChat, where agents take turns in a fixed rotation.
+from autogen_agentchat.teams import RoundRobinGroupChat
+from autogen_agentchat.conditions import TextMentionTermination
+
+
+team = RoundRobinGroupChat(
+    [optimist, pessimist],
+    termination_condition=TextMentionTermination("DONE"),
+    max_turns=10,
+)
+The first argument is the list of agents. The order determines the turn order: Optimist speaks first, then Pessimist, then Optimist again, and so on.
+Termination Conditions
+A team needs to know when to stop. TextMentionTermination("DONE") ends the conversation when any agent says "DONE". max_turns=10 is a safety limit that prevents infinite loops if no agent ever says "DONE".
+To make this work, we tell the Optimist in its system_message to say "DONE" after a few rounds:
+optimist = AssistantAgent(
+    "Optimist",
+    model_client=client,
+    system_message="""\\\\
+You are part of a two-agent debate. You always see the bright side.
+Keep each response to 1-2 sentences. Be concise and direct.
+After hearing Pessimist at least twice, say DONE to end the conversation.""",
+)
+Streaming with run_stream()
+Instead of run() which waits for the entire conversation to finish, run_stream() yields messages as they're produced. We filter for TextMessage to skip internal orchestration messages:
+from autogen_agentchat.messages import TextMessage
+
+
+async for msg in team.run_stream(
+    task="I'm thinking about quitting my job to start a bakery."
+):
+    if isinstance(msg, TextMessage) and msg.source != "user":
+        print(f"[{msg.source}] {msg.content}")
+Expected output (will vary):
+[Optimist] That's an exciting decision! Starting a bakery can be a wonderful
+way to pursue your passion and share your creations with others.
+
+
+[Pessimist] Quitting your job to start a bakery comes with significant
+financial risks; without a stable income, you could face challenges...
+
+
+[Optimist] While financial risks are real, many successful bakers start small
+and grow their businesses over time...
+
+
+[Pessimist] Even with a slow start, the baking industry is highly competitive
+and saturated...
+
+
+[Optimist] True, there is competition, but having a unique selling point can
+help you stand out... DONE
+The agents take turns in order, each responding to everything said so far. When the Optimist decides the debate has gone long enough, it says "DONE" and the team stops.
+Step 6: SelectorGroupChat
+RoundRobinGroupChat always follows a fixed rotation. But what if you want more control, like routing to a specific agent based on a condition? SelectorGroupChat lets you define a selector_func that decides who speaks next.
+Adding a Third Agent
+Let's add a Summarizer that wraps up the debate. Each agent now includes a description parameter, which the team can use to understand each agent's role:
+from autogen_agentchat.teams import SelectorGroupChat
+
+
+optimist = AssistantAgent(
+    "Optimist",
+    model_client=client,
+    description="Sees the bright side and highlights opportunities",
+    system_message="""\\\\
+You always see the bright side. Keep to 1-2 sentences.
+Do NOT say DONE yourself.""",
+)
+
+
+pessimist = AssistantAgent(
+    "Pessimist",
+    model_client=client,
+    description="Plays devil's advocate and identifies risks",
+    system_message="""\\\\
+You always see the risks and downsides. Keep to 1-2 sentences.
+Do NOT say DONE yourself.""",
+)
+
+
+summarizer = AssistantAgent(
+    "Summarizer",
+    model_client=client,
+    description="Gives a final balanced recommendation after debate",
+    system_message="""\\\\
+Synthesize the debate into 2-3 sentences of balanced advice.
+End with DONE.""",
+)
+selector_func
+The selector_func receives the full message history and returns the name of the next agent. Here we implement: Optimist and Pessimist alternate, then after 4 turns the Summarizer takes over:
+def selector_func(messages):
+    if not messages:
+        return "Optimist"
+    non_user = [m for m in messages if m.source != "user"]
+    turns = len(non_user)
+    if turns >= 4:
+        return "Summarizer"
+    last = messages[-1].source
+    if last == "Optimist":
+        return "Pessimist"
+    return "Optimist"
+You can write any logic here: fixed rotation, conditional routing, content-based decisions, etc. If selector_func returns None, the team falls back to using an LLM to pick the next speaker based on agent descriptions.
+Creating the Team
+team = SelectorGroupChat(
+    [optimist, pessimist, summarizer],
+    model_client=client,
+    termination_condition=TextMentionTermination("DONE"),
+    max_turns=8,
+    selector_func=selector_func,
+)
+Note: SelectorGroupChat requires a model_client because it also supports LLM-based routing, where the LLM reads agent descriptions to pick the next speaker (we'll see this in the next section). When you provide a selector_func, the LLM router is not used, but model_client is still required.
+Expected output (will vary):
+[Optimist] That's an exciting venture! Starting a bakery could be a wonderful
+way to turn your passion for baking into a fulfilling career.
+
+
+[Pessimist] However, consider the financial instability and long hours often
+associated with starting a business...
+
+
+[Optimist] Those challenges can definitely seem daunting, but every successful
+business has faced them! ...
+
+
+[Pessimist] While determination is key, keep in mind that many startups fail
+within the first few years...
+
+
+[Summarizer] Consider your passion and dedication against the realities of
+financial risks and market competition... DONE
+Step 7: LLM-Based Orchestration
+In the previous section, selector_func used Python code to decide who speaks next. But SelectorGroupChat can also let an LLM make that decision. If you don't provide a selector_func, the team uses its model_client to read the conversation and pick the next speaker based on each agent's description.
+This is useful when the routing logic is hard to express in code, like "pick whichever expert is most relevant to what's being discussed right now."
+Example: Expert Panel
+Let's create four agents with distinct expertise. Instead of coding the turn order, we let the LLM decide who should speak:
+financial_advisor = AssistantAgent(
+    "FinancialAdvisor",
+    model_client=client,
+    description="Expert in budgeting, savings, startup costs, and financial planning",
+    system_message="You are a financial advisor. Give practical money-related advice in 1-2 sentences. ...",
+)
+
+
+lifestyle_coach = AssistantAgent(
+    "LifestyleCoach",
+    model_client=client,
+    description="Expert in work-life balance, personal fulfillment, and well-being",
+    system_message="You are a lifestyle coach. Give advice on personal fulfillment ... ",
+)
+
+
+business_strategist = AssistantAgent(
+    "BusinessStrategist",
+    model_client=client,
+    description="Expert in market analysis, competition, and business growth strategies",
+    system_message="You are a business strategist. Give advice on market positioning ... ",
+)
+
+
+summarizer = AssistantAgent(
+    "Summarizer",
+    model_client=client,
+    description="Wraps up by synthesizing all expert advice into a final recommendation",
+    system_message="Synthesize all the expert advice into 2-3 sentences ... End with DONE.",
+)
+Notice that description is what the LLM reads to decide routing. The more specific the description, the better the routing decisions.
+Creating the Team
+The team is created without selector_func. The LLM picks the next speaker each turn:
+team = SelectorGroupChat(
+    [financial_advisor, lifestyle_coach, business_strategist, summarizer],
+    model_client=client,
+    termination_condition=TextMentionTermination("DONE"),
+    max_turns=6,
+)
+
+
+async for msg in team.run_stream(
+    task="I'm thinking about quitting my job to start a bakery."
+):
+    if isinstance(msg, TextMessage) and msg.source != "user":
+        print(f"[{msg.source}] {msg.content}")
+Expected output (will vary):
+[FinancialAdvisor] Before making the leap, ensure you have a solid business
+plan and at least 3 to 6 months of living expenses saved...
+
+
+[LifestyleCoach] Pursuing your passion for baking can bring tremendous
+fulfillment, but be sure to assess your motivations...
+
+
+[BusinessStrategist] Focus on identifying a unique selling proposition that
+distinguishes your offerings from competitors...
+
+
+[Summarizer] Before quitting your job, develop a solid business plan, save
+at least 3 to 6 months of living expenses, and consider starting your bakery
+as a side hustle... DONE
+The LLM routed the question to each expert based on their description, then called the Summarizer to wrap up. No Python routing logic needed.
+Customizing the Selector Prompt
+Behind the scenes, the LLM receives this default prompt each turn:
+You are in a role play game. The following roles are available:
+{roles}.
+Read the following conversation. Then select the next role from {participants} to play.
+Only return the role.
+
+
+{history}
+
+
+Read the above conversation. Then select the next role from {participants} to play.
+Only return the role.
+{roles}, {participants}, and {history} are template variables that get replaced with agent descriptions, agent names, and the conversation so far. You can override this with the selector_prompt parameter if you need to add specific routing instructions.
+Note: The quality of LLM-based routing depends on the model. Smaller models like gpt-4o-mini may not always follow complex routing instructions reliably. For deterministic control, use selector_func instead.
+Step 8: Swarm & Handoff
+In the team types we've seen so far, a central mechanism decides who speaks next (fixed rotation in RoundRobinGroupChat, a function or LLM in SelectorGroupChat). Swarm takes a different approach: each agent decides for itself who to hand off to next.
+Defining Handoffs
+Each agent declares which agents it can hand off to via the handoffs parameter. A Handoff specifies the target agent and a description that helps the LLM decide when to use it:
+from autogen_agentchat.base import Handoff
+from autogen_agentchat.teams import Swarm
+
+
+researcher = AssistantAgent(
+    "Researcher",
+    model_client=client,
+    handoffs=[
+        Handoff(target="Writer",
+                description="After researching, hand off to Writer"),
+    ],
+    system_message="""\\\\
+You are a Researcher. Gather 3 key facts about the topic in bullet points.
+Then hand off to Writer.""",
+)
+
+
+writer = AssistantAgent(
+    "Writer",
+    model_client=client,
+    handoffs=[
+        Handoff(target="user",
+                description="After writing, return to user"),
+    ],
+    system_message="""\\\\
+You are a Writer. Take the Researcher's facts and write a short paragraph.
+Then hand off to user.""",
+)
+Behind the scenes, AutoGen converts each Handoff into a tool call that the LLM can invoke. When the agent calls a handoff tool, control passes to the target agent, which receives the full conversation history.
+HandoffTermination
+HandoffTermination(target="user") stops the swarm when an agent hands off to "user". This is the standard way to end a swarm workflow:
+from autogen_agentchat.conditions import HandoffTermination
+
+
+team = Swarm(
+    [researcher, writer],
+    termination_condition=HandoffTermination(target="user"),
+    max_turns=10,
+)
+The first agent in the list (researcher) receives the initial task. From there, routing is entirely driven by handoffs.
+parallel_tool_calls=False
+Since handoffs are implemented as tool calls, you need to set parallel_tool_calls=False on the client. Otherwise the model might try to call multiple handoff tools at once, which AutoGen would reject:
+client = OpenAIChatCompletionClient(
+    model="gpt-4o-mini",
+    api_key=os.getenv("OPENAI_API_KEY"),
+    parallel_tool_calls=False,
+)
+Running the Swarm
+We use run_stream() and also print HandoffMessage to see the transitions:
+from autogen_agentchat.messages import TextMessage, HandoffMessage
+
+
+async for msg in team.run_stream(task="Tell me about the history of coffee."):
+    if isinstance(msg, TextMessage) and msg.source != "user":
+        print(f"[{msg.source}] {msg.content}")
+    elif isinstance(msg, HandoffMessage) and msg.target != "user":
+        print(f"[{msg.source}] *Handing off to {msg.target}...*")
+Expected output (will vary):
+[Researcher] *Handing off to Writer...*
+
+
+[Writer] The history of coffee is rich and fascinating, tracing back to its
+origins in the ancient coffee forests of Ethiopia, where legend suggests that
+a goat herder named Kaldi first discovered the stimulating effects of the beans
+in the 9th century. From Ethiopia, coffee made its way to the Arabian Peninsula,
+where it became a significant part of social life... Over the centuries, coffee
+has woven itself into the cultural fabric of societies worldwide.
+The Researcher gathers facts and hands off to the Writer, who composes a paragraph and hands off to the user, ending the swarm.
+Step 9: Nesting Teams with SocietyOfMindAgent
+What if you want to use a whole team as a single step in a larger workflow? SocietyOfMindAgent wraps an entire team as a single agent. The outer team sees only the summary, not the raw inner conversation.
+Inner Team
+First, we create a RoundRobinGroupChat with our Optimist and Pessimist:
+from autogen_agentchat.agents import AssistantAgent, SocietyOfMindAgent
+
+
+debate = RoundRobinGroupChat(
+    [optimist, pessimist],
+    termination_condition=TextMentionTermination("DONE"),
+    max_turns=6,
+)
+Then wrap it as a single agent:
+debate_team = SocietyOfMindAgent(
+    "Debate_Team",
+    team=debate,
+    model_client=client,
+    description="A team that debates pros and cons",
+)
+debate_team now behaves like any other AssistantAgent. When it receives a task, it internally runs the full debate, then summarizes the conversation and returns the summary as its response.
+Outer Team
+We can put debate_team inside another team alongside a Summarizer:
+summarizer = AssistantAgent(
+    "Summarizer",
+    model_client=client,
+    system_message="Read the debate summary and give a final 2-3 sentence recommendation.",
+)
+
+
+outer = RoundRobinGroupChat(
+    [debate_team, summarizer],
+    max_turns=2,
+)
+The flow is:
+1. The outer team sends the task to Debate_Team
+2. Debate_Team internally runs the debate (Optimist and Pessimist)
+3. SocietyOfMindAgent summarizes the inner conversation
+4. The summary is passed to the Summarizer in the outer team
+The outer team only sees the summary from Debate_Team, not the individual Optimist/Pessimist messages.
+async for msg in outer.run_stream(
+    task="I'm thinking about quitting my job to start a bakery."
+):
+    if isinstance(msg, TextMessage) and msg.source != "user":
+        print(f"[{msg.source}] {msg.content}")
+Expected output (will vary):
+[Optimist] That sounds like an exciting adventure! Following your passion can
+lead to a fulfilling new chapter in your life.
+
+
+[Pessimist] While pursuing your passion is inspiring, consider the financial
+stability and market demand for your bakery before making the leap...
+
+
+[Optimist] DONE. It's great to be cautious, but preparing a solid plan will
+help you navigate the challenges and turn your dream into a successful reality!
+
+
+[Debate_Team] Pursuing your passion can indeed lead to a fulfilling new chapter
+in your life! While it's important to remain cautious and consider factors
+like financial stability and market demand, creating a solid business plan
+can help you navigate challenges effectively...
+
+
+[Summarizer] Starting your own bakery could be a fulfilling pursuit, but it's
+crucial to approach this transition wisely. Ensure you have a comprehensive
+business plan and financial cushion in place to mitigate risks...
+Note that run_stream() yields the inner team's messages too, so you can observe the debate in real time. However, the Summarizer only receives the Debate_Team summary, not the individual Optimist/Pessimist messages.
+Part 2: Decision Support
+Step 10: A Single Agent in Streamlit
+In Part 2, we'll build a Decision Support web app that helps users think through decisions using multiple agents. We'll start with a single agent and add complexity one step at a time.
+import asyncio
+import os
+
+
+import streamlit as st
+from dotenv import load_dotenv
+
+
+from autogen_agentchat.agents import AssistantAgent
+from autogen_ext.models.openai import OpenAIChatCompletionClient
+
+
+from display import display_message
+The app creates an Advisor agent and runs it when the button is clicked:
+if st.button("Get Advice", type="primary", use_container_width=True):
+    client = OpenAIChatCompletionClient(
+        model="gpt-4o-mini",
+        api_key=os.getenv("OPENAI_API_KEY"),
+    )
+
+
+    advisor = AssistantAgent(
+        "Advisor",
+        model_client=client,
+        system_message=(
+            "You help people make decisions. Analyze the situation from multiple angles, "
+            "then give a balanced, actionable recommendation in 2-3 short paragraphs."
+        ),
+    )
+
+
+    async def run():
+        with st.chat_message("user"):
+            st.markdown(question)
+        result = await advisor.run(task=question)
+        for msg in result.messages:
+            if hasattr(msg, "source") and msg.source != "user":
+                display_message(msg.source, msg.content)
+
+
+    asyncio.run(run())
+One thing to note: AutoGen is async, but Streamlit is sync. We bridge the two with asyncio.run() inside the button handler.
+display.py
+The new file display.py provides a display_message() helper that renders each agent's response as a colored chat bubble. It assigns a consistent color to each agent name using a hash, so the same agent always gets the same color. We'll reuse this helper throughout Part 2.
+def display_message(source, text):
+    with st.chat_message("assistant"):
+        color = _agent_color(source)
+        st.markdown(
+            f'<span style="color:{color};font-weight:700">'
+            f'{source.replace("_", " ")}</span>',
+            unsafe_allow_html=True,
+        )
+        st.markdown(text)
+What you see in the browser
+When you click "Get Advice", the Advisor responds with a 2-3 paragraph recommendation analyzing the decision from multiple angles.
+Step 11: Adding a Wikipedia Tool
+The Advisor from the previous step gives general advice based on what the LLM already knows. To make better decisions, we want it to look up real information first. In this step, we give the same Advisor agent a Wikipedia tool so it can research facts before advising.
+Note: For production use, a search API like Google or Bing would give better results. However, those require API keys and rate limit configuration. Wikipedia's API is free and requires no setup, so we'll use it here.
+wiki_tool.py
+The new file wiki_tool.py contains a search_wikipedia function that calls the MediaWiki API in two steps: search for the most relevant article, then extract its introductory text.
+def search_wikipedia(query: str) -> str:
+    """Search Wikipedia for a topic and return a brief summary."""
+    # Step 1: search for articles matching the query
+    # Step 2: extract the intro text of the top result
+    # Returns: "{title}: {summary}" (truncated to 1000 chars)
+    ...
+The function uses urllib (Python's built-in HTTP library) so no extra dependencies are needed.
+Changes to app.py
+We import FunctionTool and the search function, then wrap it as a tool:
+from autogen_core.tools import FunctionTool
+from wiki_tool import search_wikipedia
+
+wiki_tool = FunctionTool(
+    search_wikipedia,
+    description="Search Wikipedia for factual information about any topic.",
+)
+The Advisor gets two additions: tools=[wiki_tool] so it can call the function, and reflect_on_tool_use=True so it summarizes the raw Wikipedia text instead of dumping it directly. The system message is also updated to tell the agent to research first, then advise:
+advisor = AssistantAgent(
+    "Advisor",
+    model_client=client,
+    tools=[wiki_tool],
+    system_message=(
+        "You help people make decisions. First, use the search_wikipedia tool "
+        "to research relevant facts. Then give a balanced, actionable "
+        "recommendation in 2-3 short paragraphs grounded in what you found."
+    ),
+    reflect_on_tool_use=True,
+)
+Everything else (the Streamlit UI, the display_message helper, the asyncio.run() bridge) stays exactly the same.
+What you see in the browser
+The output looks similar to before, but the Advisor's response now references specific facts from Wikipedia instead of relying solely on general knowledge.
+Step 12: From One Agent to a Pipeline
+A single agent that handles everything (clarifying the question, researching facts, and giving advice) tends to produce generic output. A pipeline lets each agent specialize in one job, and each step builds on the work of the previous ones.
+Three Specialized Agents
+We split the single Advisor into three agents:
+* Clarifier reframes the vague question into a structured problem statement. It is told not to suggest solutions.
+* Researcher takes over the Wikipedia tool from the previous step's Advisor. Its only job is to look up facts and report bullet points.
+* Advisor no longer researches. It reads everything that came before and gives a concise recommendation.
+clarifier = AssistantAgent(
+    "Clarifier",
+    model_client=client,
+    system_message=(
+        "You take a vague decision and reframe it into a clear problem statement.\\\\n\\\\n"
+        "1. Identify the core dilemma.\\\\n"
+        "2. List 2-3 key constraints (time, money, relationships, etc.).\\\\n\\\\n"
+        "Keep it brief. Do NOT suggest solutions."
+    ),
+)
+
+
+researcher = AssistantAgent(
+    "Researcher",
+    model_client=client,
+    tools=[wiki_tool],
+    system_message=(
+        "You research relevant facts to inform the decision. "
+        "Use the search_wikipedia tool to look up topics. "
+        "Only report what you learned from the tool, nothing else. "
+        "Keep it to 3-5 short bullet points."
+    ),
+    reflect_on_tool_use=True,
+)
+
+
+advisor = AssistantAgent(
+    "Advisor",
+    model_client=client,
+    system_message=(
+        "Read all previous context and give a final 2-3 sentence recommendation. "
+        "Be decisive and actionable."
+    ),
+)
+Running the Pipeline
+We wire the three agents into a RoundRobinGroupChat with max_turns=3 so each speaks once in order:
+team = RoundRobinGroupChat(
+    [clarifier, researcher, advisor],
+    max_turns=3,
+)
+
+
+async for msg in team.run_stream(task=question):
+    if isinstance(msg, TextMessage) and msg.source != "user":
+        display_message(msg.source, msg.content)
+Each agent sees all prior messages, so the Researcher can read the Clarifier's output and the Advisor can read both.
+Expected Output
+When you click "Get Advice", three colored chat bubbles appear:
+1. Clarifier identifies the core dilemma (adventure vs. skill-building) and lists constraints like time and budget.
+2. Researcher shows bullet points of facts from Wikipedia.
+3. Advisor synthesizes everything into a 2-3 sentence recommendation.
+Step 13: Adding a Debate Step
+Before the Advisor makes a recommendation, it would help to have a structured debate exploring both sides. Adding an Optimist and Pessimist directly into the outer team wouldn't work well, since each would speak once without seeing the other's argument. We want a back-and-forth, summarized into a single response for the rest of the pipeline.
+This is a good fit for SocietyOfMindAgent: an Optimist and Pessimist debate internally, and the outer team only sees the summary.
+The Debate Team
+optimist = AssistantAgent(
+    "Optimist",
+    model_client=client,
+    system_message=(
+        "You see the bright side. Highlight opportunities and upsides. "
+        "Be specific. Keep to 1-2 sentences."
+    ),
+)
+
+
+pessimist = AssistantAgent(
+    "Pessimist",
+    model_client=client,
+    system_message=(
+        "You identify risks and potential downsides. Be constructive. "
+        "Keep to 1-2 sentences."
+    ),
+)
+
+
+debate = RoundRobinGroupChat(
+    [optimist, pessimist],
+    max_turns=4,
+)
+
+
+debate_team = SocietyOfMindAgent(
+    "Debate_Team",
+    team=debate,
+    model_client=client,
+    description="Debates pros and cons of the decision",
+)
+With max_turns=4, the Optimist and Pessimist each speak twice. The SocietyOfMindAgent then summarizes the debate into a single response.
+Updating the Pipeline
+We add debate_team to the outer team and bump max_turns to 4:
+team = RoundRobinGroupChat(
+    [clarifier, researcher, debate_team, advisor],
+    max_turns=4,
+)
+The run_stream code stays the same. Because SocietyOfMindAgent exposes the same interface as any individual agent, the outer team doesn't need to know it's an entire team internally.
+Expected Output
+Four chat bubbles appear:
+1. Clarifier reframes the question into a problem statement with constraints.
+2. Researcher presents bullet points from Wikipedia.
+3. Debate Team shows a summary weighing both sides (not the individual Optimist/Pessimist messages).
+4. Advisor delivers a recommendation drawing on the problem statement, research, and debate summary.
+Step 14: Configurable Agents
+So far, changing an agent means editing Python code and restarting the app. In this step, we add a UI that lets you edit agents directly in the browser: tweak their names, rewrite system messages, toggle tools. The pipeline structure stays fixed (Clarifier → Researcher → Debate Team → Advisor), but the agents feeding into it become fully customizable.
+Overall Structure
+The app splits into two tabs and three new files:
+* Tab 1 ("Define Agents"): an editor where you can modify, add, or remove agents
+* Tab 2 ("Run"): the same pipeline from before, but now it builds agents from the editor's state instead of hardcoding them
+The new files:
+* defaults.py stores the starting agent configurations as a list of dictionaries
+* tab_agents.py renders the agent editor UI
+* app.py ties everything together with tabs and session state
+Representing Agents as Data
+Instead of creating AssistantAgent objects directly, we represent each agent as a plain dictionary with four fields:
+# defaults.py
+DEFAULT_AGENTS = [
+    {
+        "name": "Clarifier",
+        "system_message": "You take a vague decision and reframe it into ...",
+        "description": "Reframes decisions into clear problem statements",
+        "has_wiki_tool": False,
+    },
+    # ... Researcher (has_wiki_tool=True), Optimist, Pessimist, Advisor
+]
+When the app first loads, these defaults are copied into st.session_state.agents with a UUID attached to each one. From that point on, the UI reads from and writes to session state:
+if "agents" not in st.session_state:
+    st.session_state.agents = [
+        {**a, "id": str(uuid.uuid4())} for a in DEFAULT_AGENTS
+    ]
+We'll see why the UUIDs are needed in a moment.
+The Agent Editor
+tab_agents.py loops over st.session_state.agents and renders an expander for each one. The key pattern is two-way binding:
+for i, agent in enumerate(st.session_state.agents):
+    aid = agent["id"]
+    with st.expander(agent["name"]):
+        name = st.text_input("Name", agent["name"], key=f"an_{aid}")
+        msg = st.text_area("System Message", agent["system_message"], key=f"am_{aid}")
+        # ... description, wiki toggle
+        st.session_state.agents[i].update(name=name, system_message=msg, ...)
+Each widget reads its default value from session state, and the user's edit is written back with .update(...). On the next Streamlit rerun, the widget picks up the updated value. This keeps the widgets and data in sync.
+Notice that each widget's key uses the agent's UUID (aid), not the list index i. This is why we added UUIDs earlier: Streamlit identifies widgets by their key, so if you used key=f"name_{i}" and then removed an agent in the middle of the list, all the indices after it would shift. Streamlit would bind the wrong data to the wrong widget. UUIDs are stable regardless of list order.
+Building Agents from Config
+When you click "Run", the app reads session state and constructs real AutoGen agents:
+agents = {}
+for cfg in st.session_state.agents:
+    kwargs = {}
+    if cfg.get("has_wiki_tool"):
+        kwargs["tools"] = [wiki_tool]
+        kwargs["reflect_on_tool_use"] = True
+    agents[cfg["name"]] = AssistantAgent(
+        cfg["name"],
+        model_client=client,
+        system_message=cfg.get("system_message", ""),
+        **kwargs,
+    )
+The pipeline itself is still hardcoded: it looks up agents by name (agents["Clarifier"], agents["Researcher"], etc.) and wires them into the same RoundRobinGroupChat + SocietyOfMindAgent structure from the previous step. If you rename or remove a required agent, you'll get a KeyError. The next step removes this limitation by making the pipeline configurable too.
+What You See in the Browser
+Tab 1 shows five collapsible sections, one per default agent. Expanding a section reveals fields for name, description, system message, and a Wikipedia tool toggle. You can add new agents or remove existing ones.
+Tab 2 works the same as before: enter a question, click the button, and see the pipeline output. The difference is that the agents now reflect whatever you configured in Tab 1.
+Step 15: Configurable Pipeline
+In the previous step, the agent editor lets you change what agents say, but the pipeline structure is still hardcoded. If you want to try a different team type or reorder steps, you have to edit Python code.
+This final step adds a pipeline builder UI. Each step can be a single agent or a team, and teams support all three collaboration patterns from Part 1: round-robin, LLM orchestration, and swarm. Combined with the agent editor, the entire multi-agent system is now configurable from the browser.
+Pipeline as Data
+The same approach from the agent editor applies here. Each pipeline step is a dictionary in st.session_state.pipeline:
+DEFAULT_PIPELINE = [
+    {"type": "agent", "agent_name": "Clarifier"},
+    {"type": "agent", "agent_name": "Researcher"},
+    {
+        "type": "team",
+        "team_name": "Debate_Team",
+        "team_type": "roundrobin",
+        "members": ["Optimist", "Pessimist"],
+        "max_turns": 4,
+        ...
+    },
+    {"type": "agent", "agent_name": "Advisor"},
+]
+Agent steps only need a name. Team steps carry additional configuration: team type, member list, max turns, and type-specific settings (termination keyword, routing guidance, or handoff targets).
+The Pipeline Editor
+tab_pipeline.py renders an expander for each step. A radio button switches between "agent" (select from a dropdown) and "team" (configure the team). For teams, the UI adapts based on team type:
+* Round-robin: optional termination keyword
+* LLM orchestration: optional routing guidance that gets appended to the selector prompt
+* Swarm: a handoff configuration section where you set each member's handoff targets (other members or "user")
+The swarm configuration is the most involved. For each member, a multiselect lets you pick which agents it can hand off to. At least one agent must hand off to "user" so the swarm can terminate.
+Building AutoGen Objects
+The new file builder.py translates UI configuration into real AutoGen objects. The main function, build_pipeline, loops over the pipeline steps: agent steps become AssistantAgent objects, team steps become inner teams wrapped in SocietyOfMindAgent. The outer pipeline is a RoundRobinGroupChat where each member speaks once.
+A few design decisions worth noting:
+* Name sanitization. AutoGen requires agent names to be valid Python identifiers (no spaces or special characters). The builder runs all names through _safe_name(), which replaces invalid characters with underscores. This way users can type "My Agent" in the UI and it becomes My_Agent internally.
+* Two clients. Swarm agents need parallel_tool_calls=False (handoffs are tool calls, and parallel calls break them). A separate swarm_client is created for this. All other agents use the standard client.
+* reflect_on_tool_use is disabled for swarm agents with tools. reflect_on_tool_use=True combined with parallel_tool_calls=False causes a crash in AutoGen. Swarm agents with the Wikipedia tool will return raw tool results instead of a natural-language summary, but SocietyOfMindAgent summarizes the output anyway.
+* Single-step pipelines skip the outer RoundRobinGroupChat and return the agent or team directly.
+Simplified app.py
+With the build logic extracted to builder.py, the main file is much simpler. It initializes session state, creates three tabs, and delegates:
+t_agents, t_pipeline, t_run = st.tabs(
+    ["1. Define Agents", "2. Build Pipeline", "3. Run"]
+)
+
+
+tab_agents.render(t_agents)
+tab_pipeline.render(t_pipeline)
+The Run tab calls build_pipeline and passes the result to a new run_and_display helper in display.py. This helper handles both single agents and teams, using run_stream for teams and run for individual agents. It also displays ToolCallSummaryMessage in addition to TextMessage, which is needed for swarm agents: since they use reflect_on_tool_use=False, their tool results come back as ToolCallSummaryMessage rather than TextMessage.
+team_or_agent, is_team = build_pipeline(
+    st.session_state.agents,
+    st.session_state.pipeline,
+)
+run_and_display(team_or_agent, is_team, question)
+What You See in the Browser
+The app now has three tabs. Tab 1 is the agent editor from before. Tab 2 is the new pipeline builder with expandable steps, each configurable as an agent or a team. Tab 3 shows the current pipeline as a summary string (e.g., "Clarifier -> Researcher -> Debate_Team -> Advisor"), followed by the question input and run button.
+Try changing the Debate Team's type from "roundrobin" to "swarm", setting up handoff targets, and running the pipeline to see how the output changes.
+Step 16: Finishing Touches
+The configurable pipeline from the previous step is fully functional, but a couple of convenience features make it more practical to use.
+Presets
+Setting up agents and pipeline steps from scratch takes time. Presets let you load a ready-made configuration with one click, explore how it works, and then modify it.
+The app ships with three preset buttons at the top of the page:
+* Decision Support: the same Clarifier → Researcher → Debate Team → Advisor pipeline we've been building throughout Part 2.
+* Stakeholder Simulation: a Swarm where a Coordinator, StakeholderFinder, and Simulator hand off to each other in a cycle, gathering multiple perspectives before synthesizing a recommendation.
+* Blank Canvas: a single empty agent, so you can build from scratch without deleting the defaults first.
+Presets are defined in defaults.py as a dictionary of {name: {agents, pipeline}} configurations. Clicking a preset button replaces the current session state and triggers a rerun, updating all tabs to reflect the new configuration.
+Transcript Download
+After the pipeline finishes, a Download Transcript button appears below the conversation. Clicking it saves the full exchange (question and all agent responses) as a .txt file. The conversation history is stored in st.session_state so it persists across reruns.
+Try It
+Load the Stakeholder Simulation preset and run it. Watch how the Coordinator, StakeholderFinder, and Simulator hand off to each other in a loop, building up multiple perspectives before the Coordinator synthesizes a recommendation. Then try modifying it: add a Researcher with the Wikipedia tool before the swarm, or change the Simulator's system message to make it more opinionated.

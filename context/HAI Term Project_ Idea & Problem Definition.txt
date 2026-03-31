@@ -1,0 +1,52 @@
+ChatFolio
+Chris, Indel, Nate, Matt
+Ideation & Problem Definition
+Note: The app name is a work in progress.
+
+Capabilities of AI
+Human Involvement
+Current User Problem
+Content overview
+2
+
+
+
+
+Beginner investors face an overwhelming amount of financial information and jargon, making it difficult to build a starter portfolio with confidence. There are also an overwhelming amount of investment vehicles digitally for retail investors, from ETFs to Cryptocurrency on mobile native platforms like Robinhood and Fidelity.
+3
+Current User Problem
+
+57% of U.S. adults don't personally own stocks 
+57%
+38% of non-owners say they do not understand the stock market.
+38%
+Pain points:
+
+Information overload
+Fear of making costly mistakes
+Lack of understanding
+Existing tools tell you what to buy, not why
+4
+User Problem Facts & Figures
+https://www.philadelphiafed.org/-/media/FRBP/Assets/Consumer-Finance/Briefs/Why-Some-Americans-Dont-Invest-in-the-Stock-Market.pdf
+
+
+5
+- Complexity Simplified: AI transforms overwhelming financial data into clear, personalized investment strategies through natural conversation.
+
+- Natural Input: Users describe goals conversationally ("save for a house in 5 years"); AI extracts timeline, risk tolerance, and constraints via prompt engineering.
+
+- Instant Analysis: LLM compares portfolio options against user criteria in real-time, explaining trade-offs in plain language instead of static charts.
+How AI Capabilities Match the User Problem
+
+6
+- Human is serving as an editor to tell the AI what it needs: current financial status, goals, time-horizon, etc. AI is there to advise and clarify what should be done.
+
+- The AI doesn’t have the context of the person’s life, so the human is there to fill in the gaps when necessary so that they can work in tandem for the optimal portfolio.
+
+- Combining the human’s real-world needs with the AI’s vast knowledge in personal finance. 
+
+
+Human Involvement
+
+Thank you
