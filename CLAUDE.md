@@ -49,6 +49,7 @@ The target user is a beginner investor who is intimidated by financial jargon an
 | `.env.example` | Template showing required env vars |
 | `.streamlit/config.toml` | Dark theme configuration |
 | `PRD.md` | Product requirements document — tracks what's built, deferred, and version history |
+| `DESIGN.md` | HAI design rationale — maps every feature to course evaluation criteria with reasoning |
 | `CLAUDE.md` | This file — development guidance |
 | `context/` | Course reference materials (project definitions, lecture notes) — not application code |
 | `venv/` | Python virtual environment — git-ignored |
