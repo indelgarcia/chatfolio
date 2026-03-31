@@ -19,7 +19,7 @@
 
 ---
 
-## 2. Post-Portfolio Action Plan (How to Actually Start Investing)
+## 2. Post-Portfolio Action Plan (How to Actually Start Investing) -- IMPLEMENTED (v0.3)
 
 **Current state:** After the portfolio is generated, the user sees percentages and dollar amounts - but no guidance on what to do next. A beginner doesn't know how to go from "put 54% in VTI" to actually owning VTI.
 
@@ -33,9 +33,11 @@
   5. **Set up automation** — suggest enabling automatic recurring investments so they don't have to manually buy each month.
 - This should be contextual — the specific steps should adapt to the user's profile. Someone investing $50/mo needs fractional share guidance; someone investing $2000/mo does not.
 
+> **Status:** Implemented in v0.3. GPT-4o-mini generates a personalized action plan displayed in an expandable "How to Get Started" section. Steps adapt to user's goal (Roth IRA vs. taxable) and budget (fractional shares for small budgets). All 5 steps covered.
+
 ---
 
-## 3. Portfolio Rationale / Explanation Passage
+## 3. Portfolio Rationale / Explanation Passage -- IMPLEMENTED (v0.3)
 
 **Current state:** The portfolio output shows ticker symbols, percentages, and dollar amounts — but no explanation of *why* this specific allocation was chosen. The output feels like a black box.
 
@@ -47,6 +49,8 @@
   - Address what the user would *lose* by choosing differently — e.g., "A more conservative allocation would reduce your exposure to market swings, but based on historical returns it would likely grow your portfolio more slowly over 30 years."
   - Reference the user's specific inputs: their goal, budget, timeline, risk level, and any additional info they shared.
 - The passage should be written in plain, approachable language — not financial jargon. This is a HAI system; the user should feel like they *understand* why this portfolio was recommended, not just told to trust it.
+
+> **Status:** Implemented in v0.3. GPT-4o-mini generates a 2-3 paragraph rationale displayed under "Why This Portfolio?" heading. Covers equity/bond split reasoning, each holding's role, trade-offs, and references user's specific inputs. All sub-items addressed.
 
 ---
 
@@ -87,7 +91,7 @@
 
 ---
 
-## 5. Investment Growth Projections Over Time
+## 5. Investment Growth Projections Over Time -- PARTIALLY IMPLEMENTED (v0.3)
 
 **Current state:** The portfolio output is a snapshot — it shows what to buy *today* but nothing about what it could become. A beginner has no sense of whether $150/mo will actually matter in 30 years.
 
@@ -102,6 +106,8 @@
 - Include a disclaimer that projections are estimates based on historical performance and not guaranteed.
 - If the user's inputs change (different budget, different risk level), the projections should reflect the updated allocation.
 
+> **Status:** Partially implemented in v0.3. What's done: line chart with optimistic/expected/conservative scenarios, summary table at 5-year milestones, disclaimer, and projections update when profile changes via the edit loop. What's NOT done: currently uses hardcoded historical averages for VTI/VXUS/BND/BNDX only — when TODO #1 (expanded ETF universe) is implemented, the return assumptions and ticker-to-asset-class mapping in `projections.py` will need to be expanded to cover new tickers.
+
 ---
 
 ## Additional To-Dos by Claude
@@ -110,7 +116,7 @@ These are items not in the original list but would meaningfully improve the app 
 
 ---
 
-### 6. Post-Generation Edit and Iteration Loop
+### 6. Post-Generation Edit and Iteration Loop -- PARTIALLY IMPLEMENTED (v0.3)
 
 **Current state:** Once the portfolio is generated, the user can't adjust it. If they want to see what a more aggressive allocation looks like, they have to click "Start Over" and redo the entire conversation.
 
@@ -118,6 +124,8 @@ These are items not in the original list but would meaningfully improve the app 
 
 - After the portfolio is displayed, allow the user to continue chatting to request changes: "What if I bumped my budget to $300?" or "Can you make it more aggressive?" or "Remove international bonds."
 - The system should regenerate the portfolio with the updated profile and show a before/after comparison. This directly addresses the HAI criteria for **User Feedback** — the user should be able to iterate, not just accept or restart.
+
+> **Status:** Partially implemented in v0.3. What's done: chat stays active after portfolio generation, system prompt handles adjustment requests, profile updates trigger automatic regeneration of portfolio + rationale + action plan + projections. What's NOT done: before/after comparison view — currently the old portfolio is simply replaced. A side-by-side or diff view would be a future enhancement.
 
 ---
 
@@ -132,7 +140,7 @@ These are items not in the original list but would meaningfully improve the app 
 
 ---
 
-### 8. Onboarding Explainer / "What Can This Tool Do?"
+### 8. Onboarding Explainer / "What Can This Tool Do?" -- IMPLEMENTED (v0.3)
 
 **Current state:** The app opens with a greeting from the AI but no structured explanation of what ChatFolio can and cannot do. A first-time user doesn't know the scope of the tool.
 
@@ -140,6 +148,8 @@ These are items not in the original list but would meaningfully improve the app 
 
 - Add a brief onboarding panel or initial message that explains: what ChatFolio does (helps build a starter portfolio), what it *doesn't* do (not a financial advisor, doesn't execute trades, doesn't guarantee returns), what information it will ask for, and roughly how long the conversation will take.
 - This directly addresses HAI **Onboarding** criteria. The user should understand the system's capabilities and limitations before engaging.
+
+> **Status:** Implemented in v0.3. Expandable "What is ChatFolio?" panel shown on first load. Covers: what it does, what it asks, how long it takes, and what it won't do (not a financial advisor). Collapses once the user has more than 1 message in chat.
 
 ---
 
@@ -167,7 +177,7 @@ These are items not in the original list but would meaningfully improve the app 
 
 ---
 
-### 11. Disclaimer and Guardrails
+### 11. Disclaimer and Guardrails -- IMPLEMENTED (v0.3)
 
 **Current state:** No disclaimer anywhere in the app. For a tool that gives investment recommendations, this is a gap.
 
@@ -176,3 +186,5 @@ These are items not in the original list but would meaningfully improve the app 
 - Add a clear disclaimer that ChatFolio is an educational tool, not a licensed financial advisor.
 - The AI should decline to give advice on specific stocks if it's not confident, and should recommend consulting a professional for complex situations (tax optimization, estate planning, etc.).
 - Important for both ethical responsibility and for the HAI evaluation — the system should communicate its limitations honestly.
+
+> **Status:** Implemented in v0.3. What's done: static disclaimer below portfolio output, guardrail instruction added to system prompt telling the AI to recommend professionals for complex situations and never guarantee returns. What's NOT done: the AI doesn't yet actively decline specific stock pick requests — it relies on the system prompt guideline but doesn't have hard enforcement.

@@ -41,9 +41,10 @@ The target user is a beginner investor who is intimidated by financial jargon an
 | File | Purpose |
 |------|---------|
 | `app.py` | Streamlit entry point: layout, chat loop, sidebar, portfolio display |
-| `chat_engine.py` | OpenAI API calls, system prompt, structured JSON profile extraction |
+| `chat_engine.py` | OpenAI API calls, system prompt, structured JSON profile extraction, rationale + action plan generation |
 | `portfolio.py` | Rule-based ETF allocation from user profile (risk + timeline -> equity/bond split) |
-| `requirements.txt` | Python dependencies: streamlit, openai, python-dotenv |
+| `projections.py` | Compound-growth projection math — produces DataFrame of portfolio value at yearly intervals |
+| `requirements.txt` | Python dependencies: streamlit, openai, python-dotenv, pandas |
 | `.env` | API key — **git-ignored, never commit** |
 | `.env.example` | Template showing required env vars |
 | `.streamlit/config.toml` | Dark theme configuration |
@@ -67,10 +68,11 @@ Requires `OPENAI_API_KEY` in `.env`.
 
 1. User sends a message via `st.chat_input`
 2. `chat_engine.py` sends the full conversation history + current profile state to GPT-4o-mini
-3. The model returns JSON: `{ message, profile_updates, ready_for_portfolio }`
+3. The model returns JSON: `{ message, profile_updates, ready_for_portfolio, profile_changed }`
 4. `app.py` displays the message, applies profile updates to session state, updates sidebar
 5. When `ready_for_portfolio` is true, a "Generate My Portfolio" button appears
-6. User clicks the button -> `portfolio.py` computes allocations -> displayed with progress bars
+6. User clicks the button -> `portfolio.py` computes allocations, `chat_engine.py` generates rationale + action plan, `projections.py` computes growth curves -> all displayed together
+7. After generation, the user can keep chatting to adjust their profile. When `profile_changed` is true, the portfolio, rationale, action plan, and projections all regenerate automatically
 
 ## Profile Fields
 
@@ -93,6 +95,16 @@ Requires `OPENAI_API_KEY` in `.env`.
 - **PRD.md** must be updated whenever features are added, modified, or removed
 - **CLAUDE.md** must be updated whenever files are added/removed, architecture changes, or new conventions are established
 - Both files serve as the source of truth for picking up work in future sessions
+
+## Verification Checklist
+
+After making changes, verify the app end-to-end:
+
+- Run `streamlit run app.py` after each item
+- Test full flow: greeting -> 4 questions -> additional info -> generate -> read rationale -> read projections -> read action plan -> ask to change budget -> see updated portfolio
+- Verify onboarding panel appears on first load
+- Verify disclaimer appears below portfolio
+- Verify chat still works after portfolio generation (edit loop)
 
 ## Context Directory
 

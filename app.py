@@ -1,8 +1,9 @@
 import streamlit as st
 import os
 from dotenv import load_dotenv
-from chat_engine import get_ai_response
+from chat_engine import get_ai_response, generate_rationale, generate_action_plan
 from portfolio import generate_portfolio
+from projections import generate_projections
 
 load_dotenv()
 
@@ -39,11 +40,15 @@ if "ready" not in st.session_state:
     st.session_state.ready = False
 if "greeted" not in st.session_state:
     st.session_state.greeted = False
+if "rationale" not in st.session_state:
+    st.session_state.rationale = None
+if "action_plan" not in st.session_state:
+    st.session_state.action_plan = None
 
 API_KEY = os.getenv("OPENAI_API_KEY")
 
 # ---------------------------------------------------------------------------
-# Sidebar — live profile
+# Sidebar -live profile
 # ---------------------------------------------------------------------------
 with st.sidebar:
     st.header("Your Profile")
@@ -86,7 +91,29 @@ with st.sidebar:
 # Main area
 # ---------------------------------------------------------------------------
 st.title("ChatFolio")
-st.caption("Build your starter portfolio through conversation — not forms.")
+st.caption("Build your starter portfolio through conversation -not forms.")
+
+# ---------------------------------------------------------------------------
+# Onboarding panel -shown until the user starts chatting
+# ---------------------------------------------------------------------------
+if not st.session_state.messages or len(st.session_state.messages) <= 1:
+    with st.expander("What is ChatFolio?", expanded=True):
+        st.markdown(
+            "**ChatFolio helps you build a starter investment portfolio through a "
+            "simple conversation.** No forms, no jargon -just tell me about your "
+            "goals and I'll recommend a diversified mix of low-cost index funds.\n\n"
+            "**Here's what I'll ask about:**\n"
+            "- What you're investing for (retirement, a house, etc.)\n"
+            "- How many years until you need the money\n"
+            "- How much you can invest per month\n"
+            "- How comfortable you are with risk\n\n"
+            "**This takes about 2-3 minutes.** At the end, you'll get a personalized "
+            "portfolio with an explanation of why it fits you, projected growth over "
+            "time, and step-by-step instructions for getting started.\n\n"
+            "**What ChatFolio is not:** I'm an educational tool, not a licensed "
+            "financial advisor. I don't execute trades or guarantee returns. For "
+            "complex financial situations, consult a professional."
+        )
 
 if not API_KEY:
     st.error("Set OPENAI_API_KEY in your .env file to get started.")
@@ -115,7 +142,14 @@ if not st.session_state.greeted:
 # ---------------------------------------------------------------------------
 if st.session_state.ready and not st.session_state.portfolio:
     if st.button("Generate My Portfolio", type="primary", use_container_width=True):
-        st.session_state.portfolio = generate_portfolio(st.session_state.profile)
+        with st.spinner("Building your portfolio..."):
+            st.session_state.portfolio = generate_portfolio(st.session_state.profile)
+            st.session_state.rationale = generate_rationale(
+                st.session_state.profile, st.session_state.portfolio, API_KEY
+            )
+            st.session_state.action_plan = generate_action_plan(
+                st.session_state.profile, st.session_state.portfolio, API_KEY
+            )
         st.rerun()
 
 # ---------------------------------------------------------------------------
@@ -152,6 +186,62 @@ if st.session_state.portfolio:
                 line += f"  \n${monthly:.0f}/mo"
             st.markdown(line)
 
+    # Rationale
+    if st.session_state.rationale:
+        st.divider()
+        st.subheader("Why This Portfolio?")
+        st.markdown(st.session_state.rationale)
+
+    # Growth projections
+    if budget > 0:
+        timeline_str = str(prof.get("timeline") or "10")
+        digits = "".join(c for c in timeline_str if c.isdigit())
+        proj_years = int(digits) if digits else 10
+        proj_years = max(proj_years, 5)  # at least 5 years
+
+        proj_df = generate_projections(st.session_state.portfolio, budget, proj_years)
+
+        st.divider()
+        st.subheader("Projected Growth")
+        st.caption("Estimated portfolio value over time based on historical averages")
+
+        # Line chart
+        chart_df = proj_df.set_index("Year")
+        st.line_chart(chart_df)
+
+        # Summary table at key milestones
+        milestones = [y for y in [5, 10, 15, 20, 25, 30, 40] if y <= proj_years]
+        if proj_years not in milestones:
+            milestones.append(proj_years)
+        milestones.sort()
+
+        summary_rows = proj_df[proj_df["Year"].isin(milestones)].copy()
+        summary_rows = summary_rows.set_index("Year")
+        for col in summary_rows.columns:
+            summary_rows[col] = summary_rows[col].apply(lambda x: f"${x:,.0f}")
+        st.table(summary_rows)
+
+        st.caption(
+            "Projections use historical average returns and assume consistent monthly "
+            "contributions. Actual results will vary. Past performance does not "
+            "guarantee future results."
+        )
+
+    # Action plan
+    if st.session_state.action_plan:
+        st.divider()
+        with st.expander("How to Get Started", expanded=False):
+            st.markdown(st.session_state.action_plan)
+
+    # Disclaimer
+    st.divider()
+    st.caption(
+        "ChatFolio is an educational tool, not a licensed financial advisor. "
+        "Allocations are based on general principles and historical averages -"
+        "past performance does not guarantee future results. Consult a qualified "
+        "financial professional before making investment decisions."
+    )
+
 # ---------------------------------------------------------------------------
 # Chat input
 # ---------------------------------------------------------------------------
@@ -177,5 +267,15 @@ if prompt := st.chat_input("Type your message..."):
 
     if resp.get("ready_for_portfolio"):
         st.session_state.ready = True
+
+    # If profile changed after portfolio was already generated, regenerate
+    if resp.get("profile_changed") and st.session_state.portfolio:
+        st.session_state.portfolio = generate_portfolio(st.session_state.profile)
+        st.session_state.rationale = generate_rationale(
+            st.session_state.profile, st.session_state.portfolio, API_KEY
+        )
+        st.session_state.action_plan = generate_action_plan(
+            st.session_state.profile, st.session_state.portfolio, API_KEY
+        )
 
     st.rerun()
