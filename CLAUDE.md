@@ -46,7 +46,6 @@ The target user is a beginner investor who is intimidated by financial jargon an
 | `projections.py` | Compound-growth projection math — produces DataFrame of portfolio value at yearly intervals |
 | `requirements.txt` | Python dependencies: streamlit, openai, python-dotenv, pandas |
 | `.env` | API key — **git-ignored, never commit** |
-| `.env.example` | Template showing required env vars |
 | `.streamlit/config.toml` | Dark theme configuration |
 | `PRD.md` | Product requirements document — tracks what's built, deferred, and version history |
 | `DESIGN.md` | HAI design rationale — maps every feature to course evaluation criteria with reasoning |
