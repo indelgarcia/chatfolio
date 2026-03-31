@@ -127,6 +127,11 @@ These are items not in the original list but would meaningfully improve the app 
 
 > **Status:** Partially implemented in v0.3. What's done: chat stays active after portfolio generation, system prompt handles adjustment requests, profile updates trigger automatic regeneration of portfolio + rationale + action plan + projections. What's NOT done: before/after comparison view — currently the old portfolio is simply replaced. A side-by-side or diff view would be a future enhancement.
 
+**Still needed:**
+
+- **"What if" risk toggle buttons.** After the portfolio is generated, display quick-action buttons like "What if I was more aggressive?" and "What if I was more conservative?" that instantly regenerate the portfolio at a different risk level without requiring the user to type anything. This lowers the barrier to exploration — a beginner may not think to ask "make it more aggressive" in chat, but they'd click a button. The buttons should temporarily override the risk_tolerance field, regenerate the portfolio + rationale + projections, and let the user compare. Ideally this feeds into the portfolio versioning system (see TODO #12) so they can see both side by side.
+- **Post-generation chat prompt.** After the portfolio is displayed, add a visible nudge or hint message (e.g., an `st.info()` banner or a subtle caption near the chat input) that tells the user the conversation is still active: something like "Want to adjust anything? You can keep chatting — try 'What if I invested $300/month?' or 'Make it more aggressive.'" Right now, a user might assume the experience is over once the portfolio appears and not realize they can still type. This is critical for the HAI **User Feedback** criterion — the system should actively invite iteration, not just silently allow it.
+
 ---
 
 ### 7. Confidence Indicators on Profile Extraction
@@ -153,14 +158,17 @@ These are items not in the original list but would meaningfully improve the app 
 
 ---
 
-### 9. Export / Save Portfolio
+### 9. Export / Save Portfolio as PDF
 
-**Current state:** Everything lives in `st.session_state`. If the user closes the tab, their portfolio is gone.
+**Current state:** Everything lives in `st.session_state`. If the user closes the tab, their portfolio is gone. There is no way to save or share the output.
 
 **What needs to change:**
 
-- Add a "Download Portfolio" button that exports the results as a PDF or formatted text file — including the allocation, rationale, action plan, and projections.
-- This gives the user something tangible to take away and reference when they actually open a brokerage account. It also makes the tool feel more like a real product and less like a demo.
+- Add a "Download Portfolio" button below the portfolio output that generates a **PDF** containing the full output: allocation table with percentages and monthly dollar amounts, the rationale passage, the growth projections chart and milestone table, and the action plan.
+- The PDF should be branded (ChatFolio header), include the user's profile summary at the top, and include the disclaimer at the bottom.
+- Use a library like `fpdf2` or `reportlab` to generate the PDF server-side, then serve it via `st.download_button`. Alternatively, render HTML and convert to PDF with `weasyprint`.
+- This gives the user something tangible to take away and reference when they actually go to open a brokerage account. It transforms the experience from "I saw some numbers on a screen" to "I have a document I can follow." It also makes the tool feel more like a real product and less like a demo.
+- If portfolio versioning is implemented (see TODO #12), the user should be able to export any saved version, not just the current one.
 
 ---
 
@@ -188,3 +196,18 @@ These are items not in the original list but would meaningfully improve the app 
 - Important for both ethical responsibility and for the HAI evaluation — the system should communicate its limitations honestly.
 
 > **Status:** Implemented in v0.3. What's done: static disclaimer below portfolio output, guardrail instruction added to system prompt telling the AI to recommend professionals for complex situations and never guarantee returns. What's NOT done: the AI doesn't yet actively decline specific stock pick requests — it relies on the system prompt guideline but doesn't have hard enforcement.
+
+---
+
+### 12. Portfolio Versioning — Save and Compare Multiple Outputs Per Session
+
+**Current state:** When the user modifies their profile after portfolio generation (via the edit loop in TODO #6), the old portfolio is silently replaced. There is no way to go back and see what the previous allocation looked like or compare two different approaches side by side.
+
+**What needs to change:**
+
+- Each time a portfolio is generated or regenerated, save a snapshot to a list in session state (e.g., `st.session_state.portfolio_history`). Each snapshot should include: the portfolio allocation, the profile at the time of generation, the rationale, and a label (e.g., "Portfolio 1", "Portfolio 2", or an auto-generated name like "Moderate — $150/mo" vs. "Aggressive — $300/mo").
+- Display clickable tabs or buttons at the top of the portfolio section (e.g., "Portfolio 1 | Portfolio 2 | Portfolio 3") that let the user switch between saved versions. The currently displayed version should be highlighted.
+- When viewing a previous version, show its full output — allocation, rationale, projections, and action plan — exactly as it was when generated. This gives the user a way to compare approaches without losing earlier work.
+- This is especially powerful when paired with the "What if" risk toggle buttons from TODO #6. A user could generate their moderate portfolio, click "What if I was more aggressive?", and then toggle between the two to compare allocations, projected growth, and rationale side by side.
+- Consider adding a simple comparison view that shows two versions in side-by-side columns, highlighting differences in allocation percentages and projected outcomes.
+- This directly addresses the HAI criteria for **User Feedback** — the user should be able to explore alternatives, compare, and make an informed final choice rather than being locked into whatever the system last produced.
