@@ -1,213 +1,140 @@
 # ChatFolio - To Do List
 
-**Created:** 2026-03-31
+Completed items are tracked in `PRD.md` version history. This file only lists remaining work.
 
 ---
 
 ## 1. Expand Portfolio Generation Beyond Basic ETFs
 
-**Current state:** `portfolio.py` uses a simple rule-based system that only outputs 4 broad-market Vanguard ETFs (VTI, VXUS, BND, BNDX). Every user gets some combination of those same 4 funds regardless of wealth, sophistication, or risk appetite.
+`portfolio.py` currently hardcodes 4 Vanguard ETFs (VTI, VXUS, BND, BNDX) with a simple if-elif equity/bond split. Every user gets the same funds regardless of wealth or sophistication.
 
-**What needs to change:**
+**Scope:**
 
-- **Tiered portfolio complexity based on risk + budget.** A user with an aggressive risk tolerance and a high monthly budget should see a different class of recommendations than someone conservative with $100/mo. Specifically:
-  - **Conservative / low budget:** Keep the current broad-market ETF approach (VTI, VXUS, BND, BNDX).
-  - **Moderate:** Introduce sector-specific and thematic ETFs — tech (QQQ/VGT), healthcare (VHT), dividend-focused (VYM/SCHD), real estate (VNQ), emerging markets (VWO), ESG/clean energy funds, etc.
-  - **Aggressive / high budget:** Include individual stock picks (e.g., large-cap growth names) and cryptocurrency allocations (BTC, ETH, or crypto ETFs like BITO) alongside ETFs.
-- **AI-informed selection.** The system should factor in current market conditions and sector performance when making recommendations. For example, if the tech sector has been underperforming, the AI should explain why it's still included (long-term thesis) or reduce its weight. This means the AI needs to reason about *why* each asset is in the portfolio — not just follow a static formula.
-- **Broader ETF universe.** Move beyond just 4 Vanguard funds. Consider iShares, Schwab, SPDR equivalents and specialized ETFs (small-cap, mid-cap, value vs. growth, international developed vs. emerging, TIPS, high-yield bonds, etc.). The goal is that there are so many options that the AI has to be thoughtful about which ones to include based on the user's profile and real-world factors & context, rather than just defaulting to the same 4 funds every time. This solves the problem of what we aim to fix, take complex financial decision-making and make it more personalized and dynamic, rather than one-size-fits-all.
+- **Tiered complexity based on risk + budget:**
+  - Conservative / low budget: keep broad-market ETFs (VTI, VXUS, BND, BNDX)
+  - Moderate: add sector/thematic ETFs (QQQ, VGT, VHT, VYM, SCHD, VNQ, VWO, ESG funds, etc.)
+  - Aggressive / high budget: include individual stocks (large-cap growth) and crypto (BTC, ETH, or BITO)
+- **AI-informed selection:** Replace the rule-based `portfolio.py` with a GPT call that reasons about which assets to include based on the user's profile and current market context. The AI should explain why each asset was chosen or excluded.
+- **Broader ETF universe:** iShares, Schwab, SPDR equivalents, small-cap, mid-cap, value vs. growth, international developed vs. emerging, TIPS, high-yield bonds, etc. The AI picks from this universe rather than defaulting to the same 4.
 
----
-
-## 2. Post-Portfolio Action Plan (How to Actually Start Investing) -- IMPLEMENTED (v0.3)
-
-**Current state:** After the portfolio is generated, the user sees percentages and dollar amounts - but no guidance on what to do next. A beginner doesn't know how to go from "put 54% in VTI" to actually owning VTI.
-
-**What needs to change:**
-
-- After portfolio generation, display a step-by-step "Getting Started" guide that walks the user through:
-  1. **Choose a brokerage** — recommend beginner-friendly platforms (e.g., Fidelity, Schwab, Vanguard, Robinhood) with a brief explanation of why each is good for beginners (no minimums, commission-free ETFs, fractional shares, etc.).
-  2. **Create an account** — explain what account type to open (individual brokerage vs. Roth IRA vs. traditional IRA) based on their stated goal and timeline.
-  3. **Fund the account** — explain how to link a bank account and set up recurring transfers matching their stated monthly budget.
-  4. **Buy the investments** — explain how to search for a ticker, place a market order, and enable fractional shares if their budget is small.
-  5. **Set up automation** — suggest enabling automatic recurring investments so they don't have to manually buy each month.
-- This should be contextual — the specific steps should adapt to the user's profile. Someone investing $50/mo needs fractional share guidance; someone investing $2000/mo does not.
-
-> **Status:** Implemented in v0.3. GPT-4o-mini generates a personalized action plan displayed in an expandable "How to Get Started" section. Steps adapt to user's goal (Roth IRA vs. taxable) and budget (fractional shares for small budgets). All 5 steps covered.
-
----
-
-## 3. Portfolio Rationale / Explanation Passage -- IMPLEMENTED (v0.3)
-
-**Current state:** The portfolio output shows ticker symbols, percentages, and dollar amounts — but no explanation of *why* this specific allocation was chosen. The output feels like a black box.
-
-**What needs to change:**
-
-- Below (or above) the allocation chart, display a written passage that explains the reasoning behind the portfolio. This passage should:
-  - Explain the overall equity/bond split and why it fits *this user's* risk tolerance and timeline (e.g., "Because you have 30 years until retirement and a moderate risk tolerance, we've allocated 70% to stocks and 30% to bonds. With your long timeline, you can ride out short-term market dips and benefit from long-term stock growth.")
-  - Explain why each individual holding was included and what role it plays (e.g., "VTI gives you broad exposure to the entire U.S. stock market — over 4,000 companies in a single fund.")
-  - Address what the user would *lose* by choosing differently — e.g., "A more conservative allocation would reduce your exposure to market swings, but based on historical returns it would likely grow your portfolio more slowly over 30 years."
-  - Reference the user's specific inputs: their goal, budget, timeline, risk level, and any additional info they shared.
-- The passage should be written in plain, approachable language — not financial jargon. This is a HAI system; the user should feel like they *understand* why this portfolio was recommended, not just told to trust it.
-
-> **Status:** Implemented in v0.3. GPT-4o-mini generates a 2-3 paragraph rationale displayed under "Why This Portfolio?" heading. Covers equity/bond split reasoning, each holding's role, trade-offs, and references user's specific inputs. All sub-items addressed.
+**Files to modify:** `portfolio.py` (major rewrite or replacement), `chat_engine.py` (system prompt needs to know about expanded options), `projections.py` (expand `TICKER_CLASS` and `RETURN_ASSUMPTIONS` to cover new tickers)
 
 ---
 
 ## 4. Richer User Input — Income, Expenses, Location, and Financial Context
 
-**Current state:** The profile captures 4 required fields (goal, timeline, monthly_budget, risk_tolerance) and one optional free-text field (additional_info). This is thin - the system knows nothing about the user's broader financial picture.
+The profile currently captures only 4 required fields + 1 optional free-text field. The system knows nothing about the user's broader financial picture.
 
-**What needs to change:**
+**New profile fields to add:**
 
-- **Income:** Ask about gross annual or monthly income. This lets the system assess whether the stated monthly budget is realistic and sustainable (e.g., investing $500/mo on a $2,000/mo income is aggressive and may not leave room for emergencies).
-- **Rent / housing costs:** Knowing their biggest fixed expense helps gauge true disposable income and whether they should prioritize an emergency fund before investing.
-- **Location / state of residence:** Tax implications vary significantly by state. No state income tax (TX, FL, WA, etc.) means more take-home pay. Some states have tax-advantaged investment programs. Location also informs cost-of-living context — $150/mo to invest in Manhattan means something very different than in rural Ohio.
-- **Existing savings / emergency fund:** If they have no emergency fund, the system should recommend building one (3-6 months of expenses) before or alongside investing. This is responsible financial advice. (it may be the case that the user alreay has an emergency fund or dont need one becasue they have low expesnes and a safe environemnt like no car and living with parents)
-- **Existing investments / retirement accounts:** Knowing they already have a 401k with employer match changes the recommendation — the system should account for overlap and suggest complementary allocations rather than duplicating.
-- **Debt:** High-interest debt (credit cards) should arguably be paid off before investing. The system should at least flag this. Also consider other debt, like car note, student loans, or mortgage — these affect financial stability and risk tolerance.
-- **Employment status / stability:** A freelancer with variable income needs a different approach than someone with a stable salary.
+- **Income** (gross annual/monthly) — assess if monthly_budget is realistic and sustainable
+- **Rent / housing costs** — gauge true disposable income, flag if emergency fund should come first
+- **Location / state** — tax implications (no state income tax in TX/FL/WA), cost-of-living context, Roth vs. Traditional IRA guidance
+- **Existing savings / emergency fund** — recommend building 3-6 months expenses before investing if none exists (but account for users with low expenses / living with parents who may not need one)
+- **Existing investments / retirement accounts** — avoid overlap (e.g., already have a 401k with employer match)
+- **Debt** — high-interest debt (credit cards) should be flagged; also car notes, student loans, mortgage
+- **Employment status / stability** — freelancer vs. stable salary affects approach
 
-**How these inputs improve the portfolio and output:**
+**How these feed into output:**
 
-- The rationale passage (To-Do #3) can reference their full financial picture, not just 4 fields.
-- The portfolio allocation can be adjusted — e.g., someone with high rent in an expensive city might get a more conservative allocation because their financial cushion is thinner.
-- Tax-advantaged account recommendations (Roth vs. Traditional IRA) depend on income and state.
-- The system can flag concerns ("Your monthly budget is 25% of your income — that's ambitious. Make sure you still have an emergency fund.").
+- Rationale passage references full financial picture
+- Portfolio allocation adjusts (high rent in expensive city -> more conservative)
+- Account type recommendations depend on income + state (Roth vs. Traditional)
+- System flags concerns ("Your budget is 25% of income — make sure you have an emergency fund")
+
+**Files to modify:** `chat_engine.py` (system prompt — add new fields, extend JSON schema), `app.py` (session state profile dict, sidebar labels, progress bar denominator), `portfolio.py` (factor new fields into allocation logic)
 
 ---
 
 ## 4a. Additional Visualizations for Richer Input Data
 
-**Current state:** The only visualization is the portfolio allocation (progress bars + percentages). With richer input data from To-Do #4, there's an opportunity to show the user more about their financial picture.
+Depends on TODO #4 — needs income/expense data to be meaningful.
 
-**What to add:**
+- **Income distribution chart** — how income splits across rent, expenses, savings, investing
+- **Budget sanity gauge** — % of income going to investing, color-coded (green/yellow/red)
+- **Tax impact visual** — estimated tax drag by state, Roth vs. taxable comparison over timeline
+- **Portfolio diversity chart** — pie chart or treemap by asset class (more intuitive than progress bars)
 
-- **Income distribution breakdown:** A chart or visual showing how the user's income is split across rent, other expenses, savings, and investing. Helps them see whether their investment budget is realistic in context.
-- **Budget sanity check visual:** A simple gauge or indicator showing what percentage of income goes to investing, with color-coded zones (e.g., green = healthy, yellow = ambitious, red = potentially unsustainable).
-- **Net worth projection snippet:** A small preview tied to To-Do #5 showing projected growth.
-- **Tax impact visual:** If location data is captured, show estimated tax drag on investment returns by state, or how much a Roth IRA saves them vs. a taxable account over their timeline.
-- **Portfolio diversity chart:** A pie chart or treemap showing allocation by asset class (U.S. stocks, international stocks, bonds, crypto, etc.) - more intuitive than progress bars for seeing the full picture at a glance.
-
----
-
-## 5. Investment Growth Projections Over Time -- PARTIALLY IMPLEMENTED (v0.3)
-
-**Current state:** The portfolio output is a snapshot — it shows what to buy *today* but nothing about what it could become. A beginner has no sense of whether $150/mo will actually matter in 30 years.
-
-**What needs to change:**
-
-- After portfolio generation, display a projection showing estimated portfolio value at 5-year increments from now through the user's stated timeline (up to retirement if applicable).
-- The projection should:
-  - Use historical average returns for each asset class (e.g., ~10% annualized for U.S. equities, ~5% for bonds, adjusted for the specific allocation, etc...).
-  - Account for monthly contributions at the user's stated budget.
-  - Show multiple scenarios: **optimistic** (above-average returns), **expected** (historical average), and **conservative** (below-average/flat returns). This manages expectations and avoids the system being seen as making promises.
-  - Display as a line chart or table with clear dollar amounts at each increment (e.g., "After 10 years: ~$28,000 | After 20 years: ~$95,000 | After 30 years: ~$270,000").
-- Include a disclaimer that projections are estimates based on historical performance and not guaranteed.
-- If the user's inputs change (different budget, different risk level), the projections should reflect the updated allocation.
-
-> **Status:** Partially implemented in v0.3. What's done: line chart with optimistic/expected/conservative scenarios, summary table at 5-year milestones, disclaimer, and projections update when profile changes via the edit loop. What's NOT done: currently uses hardcoded historical averages for VTI/VXUS/BND/BNDX only — when TODO #1 (expanded ETF universe) is implemented, the return assumptions and ticker-to-asset-class mapping in `projections.py` will need to be expanded to cover new tickers.
+**Files to modify:** `app.py` (new chart sections in portfolio display area)
 
 ---
 
-## Additional To-Dos by Claude
+## 5. Growth Projections — Remaining Work
 
-These are items not in the original list but would meaningfully improve the app - especially from an HAI evaluation perspective.
+Core projections are implemented (line chart, 3 scenarios, milestone table, disclaimer). One thing remains:
 
----
+- **Expand return assumptions for new tickers.** When TODO #1 adds sector ETFs / stocks / crypto, update `TICKER_CLASS` and `RETURN_ASSUMPTIONS` in `projections.py` to cover them. Currently only maps VTI/VXUS/BND/BNDX.
 
-### 6. Post-Generation Edit and Iteration Loop -- PARTIALLY IMPLEMENTED (v0.3)
-
-**Current state:** Once the portfolio is generated, the user can't adjust it. If they want to see what a more aggressive allocation looks like, they have to click "Start Over" and redo the entire conversation.
-
-**What needs to change:**
-
-- After the portfolio is displayed, allow the user to continue chatting to request changes: "What if I bumped my budget to $300?" or "Can you make it more aggressive?" or "Remove international bonds."
-- The system should regenerate the portfolio with the updated profile and show a before/after comparison. This directly addresses the HAI criteria for **User Feedback** — the user should be able to iterate, not just accept or restart.
-
-> **Status:** Partially implemented in v0.3. What's done: chat stays active after portfolio generation, system prompt handles adjustment requests, profile updates trigger automatic regeneration of portfolio + rationale + action plan + projections. What's NOT done: before/after comparison view — currently the old portfolio is simply replaced. A side-by-side or diff view would be a future enhancement.
-
-**Still needed:**
-
-- **"What if" risk toggle buttons.** After the portfolio is generated, display quick-action buttons like "What if I was more aggressive?" and "What if I was more conservative?" that instantly regenerate the portfolio at a different risk level without requiring the user to type anything. This lowers the barrier to exploration — a beginner may not think to ask "make it more aggressive" in chat, but they'd click a button. The buttons should temporarily override the risk_tolerance field, regenerate the portfolio + rationale + projections, and let the user compare. Ideally this feeds into the portfolio versioning system (see TODO #12) so they can see both side by side.
-- **Post-generation chat prompt.** After the portfolio is displayed, add a visible nudge or hint message (e.g., an `st.info()` banner or a subtle caption near the chat input) that tells the user the conversation is still active: something like "Want to adjust anything? You can keep chatting — try 'What if I invested $300/month?' or 'Make it more aggressive.'" Right now, a user might assume the experience is over once the portfolio appears and not realize they can still type. This is critical for the HAI **User Feedback** criterion — the system should actively invite iteration, not just silently allow it.
+**Blocked by:** TODO #1
 
 ---
 
-### 7. Confidence Indicators on Profile Extraction
+## 6. Post-Generation Edit Loop — Remaining Work
 
-**Current state:** The sidebar shows extracted profile values but gives no indication of how confident the AI is in its extraction. The user sees "Risk Tolerance: moderate" but doesn't know if that was clearly stated or inferred from a vague answer.
+Core edit loop is implemented (chat stays active, AI handles adjustment requests, portfolio regenerates). Three things remain:
 
-**What needs to change:**
+- **"What if" risk toggle buttons.** Display buttons like "What if I was more aggressive?" / "What if I was more conservative?" below the portfolio. Clicking one temporarily overrides risk_tolerance, regenerates portfolio + rationale + projections. Lowers the barrier — beginners are more likely to click a button than type a request. Feeds into portfolio versioning (TODO #12).
+- **Post-generation chat nudge.** Add an `st.info()` or caption after the portfolio that tells the user the chat is still active: "Want to adjust anything? Try 'What if I invested $300/month?' or 'Make it more aggressive.'" Users currently may not realize they can keep typing.
+- **Before/after comparison.** When portfolio regenerates, show what changed vs. previous version. Depends on TODO #12 (versioning).
 
-- Add a visual confidence indicator (e.g., checkmark for confirmed, question mark for inferred) next to each profile field in the sidebar.
-- If a field was inferred rather than explicitly confirmed, highlight it so the user knows they can correct it. This strengthens the confirmation loop and makes the system's reasoning more transparent.
-
----
-
-### 8. Onboarding Explainer / "What Can This Tool Do?" -- IMPLEMENTED (v0.3)
-
-**Current state:** The app opens with a greeting from the AI but no structured explanation of what ChatFolio can and cannot do. A first-time user doesn't know the scope of the tool.
-
-**What needs to change:**
-
-- Add a brief onboarding panel or initial message that explains: what ChatFolio does (helps build a starter portfolio), what it *doesn't* do (not a financial advisor, doesn't execute trades, doesn't guarantee returns), what information it will ask for, and roughly how long the conversation will take.
-- This directly addresses HAI **Onboarding** criteria. The user should understand the system's capabilities and limitations before engaging.
-
-> **Status:** Implemented in v0.3. Expandable "What is ChatFolio?" panel shown on first load. Covers: what it does, what it asks, how long it takes, and what it won't do (not a financial advisor). Collapses once the user has more than 1 message in chat.
+**Files to modify:** `app.py` (buttons in portfolio display section, info banner after portfolio)
 
 ---
 
-### 9. Export / Save Portfolio as PDF
+## 7. Confidence Indicators on Profile Extraction
 
-**Current state:** Everything lives in `st.session_state`. If the user closes the tab, their portfolio is gone. There is no way to save or share the output.
+The sidebar shows extracted values but no indication of whether each field was explicitly confirmed or inferred from a vague answer.
 
-**What needs to change:**
+- Add confidence indicator per field (checkmark = confirmed, question mark = inferred)
+- Highlight inferred fields so the user knows they can correct them
 
-- Add a "Download Portfolio" button below the portfolio output that generates a **PDF** containing the full output: allocation table with percentages and monthly dollar amounts, the rationale passage, the growth projections chart and milestone table, and the action plan.
-- The PDF should be branded (ChatFolio header), include the user's profile summary at the top, and include the disclaimer at the bottom.
-- Use a library like `fpdf2` or `reportlab` to generate the PDF server-side, then serve it via `st.download_button`. Alternatively, render HTML and convert to PDF with `weasyprint`.
-- This gives the user something tangible to take away and reference when they actually go to open a brokerage account. It transforms the experience from "I saw some numbers on a screen" to "I have a document I can follow." It also makes the tool feel more like a real product and less like a demo.
-- If portfolio versioning is implemented (see TODO #12), the user should be able to export any saved version, not just the current one.
+**Files to modify:** `chat_engine.py` (AI returns confidence per field in JSON), `app.py` (sidebar rendering adds icons)
 
 ---
 
-### 10. Risk Tolerance Education
+## 9. Export / Save Portfolio as PDF
 
-**Current state:** The AI asks about risk tolerance, but many beginners don't know whether they're "conservative" or "aggressive." They might just pick "moderate" because it sounds safe.
+No way to save or share the output. Everything is lost when the tab closes.
 
-**What needs to change:**
+- Add "Download Portfolio" button via `st.download_button`
+- Generate PDF containing: profile summary, allocation table, rationale, projections chart + milestone table, action plan, disclaimer
+- Branded header (ChatFolio), clean layout
+- Use `fpdf2` or `reportlab` for server-side PDF generation
+- If TODO #12 (versioning) is implemented, allow exporting any saved version
 
-- Instead of asking the user to self-label their risk tolerance, ask scenario-based questions: "If your investments dropped 20% in a month, would you: (a) sell everything, (b) hold and wait, (c) buy more while it's cheap?" Map their answers to a risk profile.
-- This produces more accurate risk assessment and is better UX for beginners who don't have the vocabulary to describe their risk appetite. It also makes the conversation feel more human and less like a form.
-- Give tangible examples of what "conservative" vs. "aggressive" means in terms of portfolio composition and expected volatility, so the user can make an informed choice. For example saying "dropped 20%" is not as intuitive as "if you had $10,000 in your bank account suddenly became $8,000 but you know that it may be 25,000 tomorrow, how would you react?" This is a more visceral way to understand risk tolerance.
-- **AI-suggested risk tolerance based on profile data.** The AI should be able to *recommend* a risk level based on the user's full financial picture — not just accept whatever they say at face value. For example, a 22-year-old with a stable income, low expenses, no debt, and a 30+ year timeline is objectively well-positioned to take on more risk, even if they self-identify as "not risky." The AI should gently surface this: "Based on your age, income, and long timeline, you could afford to be more aggressive — that historically means higher returns over 30 years. Would you like me to show you what a more aggressive allocation looks like?" This isn't overriding the user — it's educating them. The user always has final say, but the system should proactively flag when their stated risk tolerance doesn't match what their profile suggests. Conversely, if someone with high debt and a short timeline says "aggressive," the AI should flag that too.
-
----
-
-### 11. Disclaimer and Guardrails -- IMPLEMENTED (v0.3)
-
-**Current state:** No disclaimer anywhere in the app. For a tool that gives investment recommendations, this is a gap.
-
-**What needs to change:**
-
-- Add a clear disclaimer that ChatFolio is an educational tool, not a licensed financial advisor.
-- The AI should decline to give advice on specific stocks if it's not confident, and should recommend consulting a professional for complex situations (tax optimization, estate planning, etc.).
-- Important for both ethical responsibility and for the HAI evaluation — the system should communicate its limitations honestly.
-
-> **Status:** Implemented in v0.3. What's done: static disclaimer below portfolio output, guardrail instruction added to system prompt telling the AI to recommend professionals for complex situations and never guarantee returns. What's NOT done: the AI doesn't yet actively decline specific stock pick requests — it relies on the system prompt guideline but doesn't have hard enforcement.
+**Files to modify:** new `export.py` (PDF generation logic), `app.py` (download button), `requirements.txt` (add fpdf2 or reportlab)
 
 ---
 
-### 12. Portfolio Versioning — Save and Compare Multiple Outputs Per Session
+## 10. Risk Tolerance Education
 
-**Current state:** When the user modifies their profile after portfolio generation (via the edit loop in TODO #6), the old portfolio is silently replaced. There is no way to go back and see what the previous allocation looked like or compare two different approaches side by side.
+Beginners don't know if they're "conservative" or "aggressive" — they default to "moderate" because it sounds safe.
 
-**What needs to change:**
+- **Scenario-based questions** instead of self-labeling: "If your $10,000 investment suddenly dropped to $8,000 but could be $25,000 next year, would you: (a) sell, (b) hold, (c) buy more?" Map answers to a risk profile.
+- **Tangible examples** of what each risk level means in portfolio terms and expected volatility
+- **AI-suggested risk tolerance:** When the user's profile data (age, income, timeline, debt) suggests a different risk level than what they stated, the AI should gently flag it: "Based on your long timeline and stable income, you could afford to be more aggressive — that historically means higher returns. Want to see what that looks like?" User always has final say. Works in reverse too (flags aggressive + high debt).
 
-- Each time a portfolio is generated or regenerated, save a snapshot to a list in session state (e.g., `st.session_state.portfolio_history`). Each snapshot should include: the portfolio allocation, the profile at the time of generation, the rationale, and a label (e.g., "Portfolio 1", "Portfolio 2", or an auto-generated name like "Moderate — $150/mo" vs. "Aggressive — $300/mo").
-- Display clickable tabs or buttons at the top of the portfolio section (e.g., "Portfolio 1 | Portfolio 2 | Portfolio 3") that let the user switch between saved versions. The currently displayed version should be highlighted.
-- When viewing a previous version, show its full output — allocation, rationale, projections, and action plan — exactly as it was when generated. This gives the user a way to compare approaches without losing earlier work.
-- This is especially powerful when paired with the "What if" risk toggle buttons from TODO #6. A user could generate their moderate portfolio, click "What if I was more aggressive?", and then toggle between the two to compare allocations, projected growth, and rationale side by side.
-- Consider adding a simple comparison view that shows two versions in side-by-side columns, highlighting differences in allocation percentages and projected outcomes.
-- This directly addresses the HAI criteria for **User Feedback** — the user should be able to explore alternatives, compare, and make an informed final choice rather than being locked into whatever the system last produced.
+**Files to modify:** `chat_engine.py` (system prompt — new question flow, suggestion logic)
+
+---
+
+## 11. Disclaimer Guardrails — Remaining Work
+
+Static disclaimer and system prompt guideline are implemented. One thing remains:
+
+- **Hard enforcement on stock pick requests.** The AI currently relies on a soft system prompt guideline to decline specific stock picks. Add explicit instructions that the AI should not recommend individual stocks by name unless the expanded portfolio system (TODO #1) is in place with proper reasoning.
+
+**Files to modify:** `chat_engine.py` (strengthen system prompt guardrail)
+
+---
+
+## 12. Portfolio Versioning — Save and Compare Multiple Outputs Per Session
+
+When the user adjusts their profile post-generation, the old portfolio is silently replaced. No way to compare approaches.
+
+- **Save snapshots:** Each generation/regeneration saves to `st.session_state.portfolio_history` — includes allocation, profile at generation time, rationale, and auto-generated label (e.g., "Moderate — $150/mo")
+- **Tab navigation:** Display "Portfolio 1 | Portfolio 2 | Portfolio 3" tabs/buttons at top of portfolio section. Clicking shows that version's full output (allocation, rationale, projections, action plan).
+- **Comparison view:** Side-by-side columns showing two versions, highlighting differences in allocations and projected outcomes.
+- Works with "What if" buttons from TODO #6 — user generates moderate portfolio, clicks "more aggressive", then toggles between them.
+
+**Files to modify:** `app.py` (history list in session state, tab UI, comparison layout)
