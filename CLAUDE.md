@@ -47,9 +47,10 @@ The target user is a beginner investor who is intimidated by financial jargon an
 | `requirements.txt` | Python dependencies: streamlit, openai, python-dotenv, pandas |
 | `.env` | API key — **git-ignored, never commit** |
 | `.streamlit/config.toml` | Dark theme configuration |
-| `PRD.md` | Product requirements document — tracks what's built, deferred, and version history |
-| `DESIGN.md` | HAI design rationale — maps every feature to course evaluation criteria with reasoning |
 | `CLAUDE.md` | This file — development guidance |
+| `docs/PRD.md` | Product requirements document — tracks what's built, deferred, and version history |
+| `docs/TODO.md` | Remaining work items with scope and file pointers |
+| `docs/DESIGN.md` | HAI design rationale — maps every feature to course evaluation criteria with reasoning |
 | `context/` | Course reference materials (project definitions, lecture notes) — not application code |
 | `venv/` | Python virtual environment — git-ignored |
 
@@ -92,7 +93,7 @@ Requires `OPENAI_API_KEY` in `.env`.
 
 ## Maintenance Rules
 
-- **PRD.md** must be updated whenever features are added, modified, or removed
+- **docs/PRD.md** must be updated whenever features are added, modified, or removed
 - **CLAUDE.md** must be updated whenever files are added/removed, architecture changes, or new conventions are established
 - Both files serve as the source of truth for picking up work in future sessions
 
