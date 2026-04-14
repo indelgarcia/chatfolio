@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ChatFolio - Affinity Diagram</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #f0f0f0;
+      padding: 40px;
+      color: #1a1a1a;
+    }
+
+    .page-header {
+      margin-bottom: 36px;
+    }
+    .page-header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #111;
+      margin-bottom: 6px;
+    }
+    .page-header p {
+      font-size: 15px;
+      color: #666;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+
+    .cluster {
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+    }
+
+    .cluster-header {
+      padding: 16px 20px;
+      color: white;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .cluster-body {
+      padding: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      min-height: 120px;
+    }
+
+    .sticky {
+      background: white;
+      border-radius: 8px;
+      padding: 14px 14px 12px;
+      font-size: 12.5px;
+      line-height: 1.5;
+      color: #222;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.06);
+      flex: 0 0 calc(50% - 6px);
+      position: relative;
+      border-top: 5px solid;
+    }
+
+    /* THEME: Onboarding */
+    .cluster-onboarding { background: #fde8e8; }
+    .cluster-onboarding .cluster-header { background: #d63b3b; }
+    .cluster-onboarding .sticky { border-top-color: #d63b3b; }
+
+    /* THEME: Risk */
+    .cluster-risk { background: #fff3e0; }
+    .cluster-risk .cluster-header { background: #e0920d; }
+    .cluster-risk .sticky { border-top-color: #e0920d; }
+
+    /* THEME: Chat */
+    .cluster-chat { background: #fffbe0; }
+    .cluster-chat .cluster-header { background: #b89b0a; }
+    .cluster-chat .sticky { border-top-color: #b89b0a; }
+
+    /* THEME: Portfolio */
+    .cluster-portfolio { background: #e2f7e4; }
+    .cluster-portfolio .cluster-header { background: #239642; }
+    .cluster-portfolio .sticky { border-top-color: #239642; }
+
+    /* THEME: UX */
+    .cluster-ux { background: #e0ecff; }
+    .cluster-ux .cluster-header { background: #2a6fdb; }
+    .cluster-ux .sticky { border-top-color: #2a6fdb; }
+
+    /* THEME: Works */
+    .cluster-works { background: #efe4fd; }
+    .cluster-works .cluster-header { background: #6831c8; }
+    .cluster-works .sticky { border-top-color: #6831c8; }
+
+    .cluster-header .badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.22);
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 9px;
+      margin-left: 8px;
+      letter-spacing: 0.03em;
+      vertical-align: middle;
+    }
+
+    .legend {
+      margin-top: 36px;
+      background: white;
+      border-radius: 14px;
+      padding: 24px 28px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+    }
+    .legend h3 {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #777;
+      margin-bottom: 16px;
+    }
+    .legend-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px 24px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 13px;
+      color: #333;
+    }
+    .legend-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .legend-item strong {
+      display: block;
+      font-weight: 600;
+    }
+    .legend-item span {
+      color: #888;
+      font-size: 12px;
+    }
+
+    .insights {
+      margin-top: 28px;
+      background: white;
+      border-radius: 14px;
+      padding: 24px 28px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+    }
+    .insights h3 {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #777;
+      margin-bottom: 16px;
+    }
+    .insight-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .insight-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .insight-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #111;
+      color: white;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .insight-text {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #222;
+      padding-top: 3px;
+    }
+    .insight-text strong {
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page-header">
+    <h1>ChatFolio - Think-Aloud Study Synthesis</h1>
+    <p>Affinity Diagram &nbsp;·&nbsp; 7 Groups, 5 Participants Each &nbsp;·&nbsp; 6 Themes Identified &nbsp;·&nbsp; April 2026</p>
+  </div>
+
+  <div class="grid">
+
+    <!-- CLUSTER 1: Onboarding -->
+    <div class="cluster cluster-onboarding">
+      <div class="cluster-header">
+        🚫 &nbsp;Onboarding &amp; Initial Prompt
+        <span class="badge">6 / 7 groups</span>
+      </div>
+      <div class="cluster-body">
+        <div class="sticky">Initial prompt is too prescriptive - suggests "house" or "retirement" as the only examples, boxing users in.</div>
+        <div class="sticky">Users felt like they had to fit into a predefined category even if their goal was more general (e.g. "just grow my money").</div>
+        <div class="sticky">Bot should ask about age, income, debt, and life stage <em>before</em> jumping to goal selection.</div>
+        <div class="sticky">"Additional Info" section at the end of the flow feels like an afterthought - that context should be gathered upfront.</div>
+        <div class="sticky">Better opener: "Tell me about yourself and what you're hoping to do with your money" instead of listing specific goals.</div>
+        <div class="sticky">Bot jumped straight to timeline questions before understanding the user's life situation.</div>
+        <div class="sticky">Users had to volunteer age, job, and income info themselves - the bot never proactively asked.</div>
+        <div class="sticky">When multiple goals were typed, model only addressed the first one.</div>
+        <div class="sticky">Example goals (retirement, house) skew older - not relatable for 22-year-olds just starting to invest.</div>
+        <div class="sticky">"It should feel like a conversation with a financial advisor who wants the whole picture."</div>
+        <div class="sticky">Need: prompts for projected income, rent, existing savings, student debt, and upcoming life changes.</div>
+      </div>
+    </div>
+
+    <!-- CLUSTER 2: Risk -->
+    <div class="cluster cluster-risk">
+      <div class="cluster-header">
+        ⚠️ &nbsp;Risk Tolerance Confusion
+        <span class="badge">3 / 7 groups</span>
+      </div>
+      <div class="cluster-body">
+        <div class="sticky">"35% confident" is a confusing and unusual metric - users didn't know how to interpret it.</div>
+        <div class="sticky">Risk level descriptions aren't sufficient for beginner investors - they need more context.</div>
+        <div class="sticky">Needs a visual spectrum or labeled scale (e.g. "Conservative → Aggressive") explaining each level.</div>
+        <div class="sticky">Newcomers fundamentally don't know what "risk" means in an investing context.</div>
+        <div class="sticky">Should ask "How experienced are you with stocks or finances?" early in the flow to calibrate language and recommendations.</div>
+      </div>
+    </div>
+
+    <!-- CLUSTER 3: Chat Flow -->
+    <div class="cluster cluster-chat">
+      <div class="cluster-header">
+        💬 &nbsp;Chat &amp; Conversation Flow
+        <span class="badge">5 / 7 groups</span>
+      </div>
+      <div class="cluster-body">
+        <div class="sticky">Users dumped all their inputs into the first message, bypassing the intended step-by-step flow entirely.</div>
+        <div class="sticky">Chat persists after portfolio creation - users were unsure if it was for follow-up questions or to restart from scratch.</div>
+        <div class="sticky">Follow-up responses after portfolio generation were abrupt and provided insufficient feedback.</div>
+        <div class="sticky">When a user asked the chatbot to explain the "additional info" field, it skipped the explanation and jumped straight to portfolio generation.</div>
+        <div class="sticky">It's not clear to users that the chatbot can assist them during the profile generation process.</div>
+        <div class="sticky">Follow-up questions from the bot used financial jargon that newcomers didn't understand.</div>
+        <div class="sticky">No visual indication that sending a follow-up message triggered a portfolio regeneration - output appears with no transition.</div>
+        <div class="sticky">"More feedback if you send another chat - it's too abrupt and not clear it produced a new output."</div>
+      </div>
+    </div>
+
+    <!-- CLUSTER 4: Portfolio Output -->
+    <div class="cluster cluster-portfolio">
+      <div class="cluster-header">
+        📊 &nbsp;Portfolio Output &amp; Comprehension
+        <span class="badge">5 / 7 groups</span>
+      </div>
+      <div class="cluster-body">
+        <div class="sticky">ETF tickers (VTI, VXUS, etc.) are confusing for beginner investors - most don't know what they are.</div>
+        <div class="sticky">Users don't know what "indexes" mean or where the specific funds come from.</div>
+        <div class="sticky">Portfolio percentage breakdowns are confusing - hard to connect to real money or to their specific goal.</div>
+        <div class="sticky">Users want a deeper dive into what each index fund does and why it's in their portfolio.</div>
+        <div class="sticky">Only Vanguard funds shown - users felt the selection wasn't diverse enough.</div>
+        <div class="sticky">Should allow users to set a target dollar amount (e.g. $1M) instead of just a vague physical goal.</div>
+        <div class="sticky">Hard to understand how the portfolio connects to a goal as specific as buying a house in a particular city.</div>
+        <div class="sticky">ETFs and financial terminology should be defined inline - not hidden in dropdowns or tooltips.</div>
+      </div>
+    </div>
+
+    <!-- CLUSTER 5: UX Polish -->
+    <div class="cluster cluster-ux">
+      <div class="cluster-header">
+        🖥️ &nbsp;UX &amp; Visual Polish
+        <span class="badge">4 / 7 groups</span>
+      </div>
+      <div class="cluster-body">
+        <div class="sticky">Page auto-scrolls to the bottom during portfolio generation - users have to scroll back up to see the beginning.</div>
+        <div class="sticky">Text color when referencing user input values was inconsistent with the rest of the chat UI.</div>
+        <div class="sticky">"How to Get Started" section is hidden in a dropdown - it should be visible by default for new users.</div>
+        <div class="sticky">No loading indicator when a follow-up message triggers portfolio regeneration - users don't know if anything is happening.</div>
+        <div class="sticky">Mandatory vs. optional input fields are not clearly differentiated - users unsure what to fill in "Additional Info."</div>
+        <div class="sticky">Post-generation content is unclear: users don't know if additional follow-up questions are changing the portfolio or not.</div>
+      </div>
+    </div>
+
+    <!-- CLUSTER 6: What Worked -->
+    <div class="cluster cluster-works">
+      <div class="cluster-header">
+        ✅ &nbsp;What Worked Well
+        <span class="badge">6 / 7 groups</span>
+      </div>
+      <div class="cluster-body">
+        <div class="sticky">Loading screen was helpful - users appreciated knowing the system was processing and not frozen.</div>
+        <div class="sticky">Sidebar updating in real-time as users answered questions was widely appreciated.</div>
+        <div class="sticky">Chart is clear, optimistic, and intuitive - users could read it without explanation.</div>
+        <div class="sticky">Portfolio explanation section was well-received once it loaded - users liked seeing the reasoning.</div>
+        <div class="sticky">"What is ChatFolio?" disclaimer was useful - users who read it upfront felt more oriented.</div>
+        <div class="sticky">Conversational format overall was liked - users preferred it to a traditional form.</div>
+        <div class="sticky">Users appreciated that the model visibly reflected their inputs in its recommendation.</div>
+        <div class="sticky">Data presentation is clean and easy to follow - diversification mix made sense once explained.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <h3>Theme Legend</h3>
+    <div class="legend-grid">
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#d63b3b"></div>
+        <div><strong>Onboarding &amp; Initial Prompt</strong><span>Most common - 6/7 groups flagged this</span></div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#e0920d"></div>
+        <div><strong>Risk Tolerance Confusion</strong><span>3/7 groups - especially beginners</span></div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#b89b0a"></div>
+        <div><strong>Chat &amp; Conversation Flow</strong><span>5/7 groups - follow-up clarity</span></div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#239642"></div>
+        <div><strong>Portfolio Output &amp; Comprehension</strong><span>5/7 groups - jargon &amp; context</span></div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#2a6fdb"></div>
+        <div><strong>UX &amp; Visual Polish</strong><span>4/7 groups - scroll, loading, layout</span></div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#6831c8"></div>
+        <div><strong>What Worked Well</strong><span>6/7 groups - chart, sidebar, format</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KEY INSIGHTS -->
+  <div class="insights">
+    <h3>Top Design Insights</h3>
+    <div class="insight-list">
+      <div class="insight-item">
+        <div class="insight-num">1</div>
+        <div class="insight-text"><strong>Context before goals.</strong> The single biggest pain point across all groups: the bot starts with "what's your goal?" before it knows anything about the user. Age, income, debt, and life stage should be gathered first - this foundational context shapes every recommendation that follows.</div>
+      </div>
+      <div class="insight-item">
+        <div class="insight-num">2</div>
+        <div class="insight-text"><strong>Beginner literacy gap is critical.</strong> Multiple users didn't know what ETFs, indexes, or risk tolerance meant. The interface currently speaks to someone with baseline financial knowledge. Inline definitions, tooltips, and a literacy check early in onboarding would close this gap.</div>
+      </div>
+      <div class="insight-item">
+        <div class="insight-num">3</div>
+        <div class="insight-text"><strong>Follow-up feedback loop is broken.</strong> After the portfolio is generated, any follow-up interaction is confusing - users can't tell if their message did anything, what changed, or whether the chat is for editing the portfolio or starting over. The regeneration state needs clear loading feedback and diff-style output.</div>
+      </div>
+      <div class="insight-item">
+        <div class="insight-num">4</div>
+        <div class="insight-text"><strong>The conversational format is an asset - invest in it.</strong> Users consistently liked the chat interface and real-time sidebar. The opportunity is to make it feel more like an advisor and less like a form: ask follow-up questions, be curious, and make users feel understood before recommending anything.</div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

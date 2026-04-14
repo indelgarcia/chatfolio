@@ -16,11 +16,6 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-st.markdown(
-    "<style>.block-container{max-width:880px}</style>",
-    unsafe_allow_html=True,
-)
-
 # ---------------------------------------------------------------------------
 # Session state
 # ---------------------------------------------------------------------------
@@ -47,6 +42,14 @@ if "action_plan" not in st.session_state:
 
 API_KEY = os.getenv("OPENAI_API_KEY")
 
+# Pre-portfolio: constrain width for readable chat.
+# Post-portfolio: let layout="wide" fill the screen for the split view.
+if not st.session_state.portfolio:
+    st.markdown(
+        "<style>.block-container{max-width:880px}</style>",
+        unsafe_allow_html=True,
+    )
+
 # ---------------------------------------------------------------------------
 # Sidebar -live profile
 # ---------------------------------------------------------------------------
@@ -66,13 +69,14 @@ with st.sidebar:
     filled = 0
     for key, label in _labels.items():
         val = _profile.get(key)
+        display_label = f"**{label}** *(optional)*" if key == "additional_info" else f"**{label}**"
         if val and val != "None specified":
-            st.markdown(f"**{label}**")
+            st.markdown(display_label)
             st.markdown(val)
             if key != "additional_info":
                 filled += 1
         else:
-            st.markdown(f"**{label}**")
+            st.markdown(display_label)
             st.caption("Waiting...")
         st.divider()
 
@@ -100,16 +104,20 @@ if not st.session_state.messages or len(st.session_state.messages) <= 1:
     with st.expander("What is ChatFolio?", expanded=True):
         st.markdown(
             "**ChatFolio helps you build a starter investment portfolio through a "
-            "simple conversation.** No forms, no jargon -just tell me about your "
+            "simple conversation.** No forms, no jargon - just tell me about your "
             "goals and I'll recommend a diversified mix of low-cost index funds.\n\n"
             "**Here's what I'll ask about:**\n"
-            "- What you're investing for (retirement, a house, etc.)\n"
-            "- How many years until you need the money\n"
-            "- How much you can invest per month\n"
-            "- How comfortable you are with risk\n\n"
-            "**This takes about 2-3 minutes.** At the end, you'll get a personalized "
+            "- What you're investing for *(required)*\n"
+            "- How many years until you need the money *(required)*\n"
+            "- How much you can invest per month *(required)*\n"
+            "- How comfortable you are with risk *(required)*\n"
+            "- Any existing accounts, debt, or upcoming life changes *(optional)*\n\n"
+            "**This takes about 2–3 minutes.** At the end, you'll get a personalized "
             "portfolio with an explanation of why it fits you, projected growth over "
             "time, and step-by-step instructions for getting started.\n\n"
+            "**Not sure where to start?** Just say something like: "
+            "_\"I'm 23 and want to start investing\"_ or "
+            "_\"I want to grow my savings but don't know where to begin.\"_\n\n"
             "**What ChatFolio is not:** I'm an educational tool, not a licensed "
             "financial advisor. I don't execute trades or guarantee returns. For "
             "complex financial situations, consult a professional."
@@ -118,11 +126,6 @@ if not st.session_state.messages or len(st.session_state.messages) <= 1:
 if not API_KEY:
     st.error("Set OPENAI_API_KEY in your .env file to get started.")
     st.stop()
-
-# Render chat history
-for msg in st.session_state.messages:
-    with st.chat_message(msg["role"]):
-        st.markdown(msg["content"])
 
 # First-run greeting
 if not st.session_state.greeted:
@@ -138,109 +141,144 @@ if not st.session_state.greeted:
     st.rerun()
 
 # ---------------------------------------------------------------------------
-# Generate button (shown once profile is complete, before portfolio exists)
+# ETF descriptions (used in portfolio display below)
 # ---------------------------------------------------------------------------
-if st.session_state.ready and not st.session_state.portfolio:
-    if st.button("Generate My Portfolio", type="primary", use_container_width=True):
-        with st.spinner("Building your portfolio..."):
-            st.session_state.portfolio = generate_portfolio(st.session_state.profile)
-            st.session_state.rationale = generate_rationale(
-                st.session_state.profile, st.session_state.portfolio, API_KEY
-            )
-            st.session_state.action_plan = generate_action_plan(
-                st.session_state.profile, st.session_state.portfolio, API_KEY
-            )
-        st.rerun()
+ETF_DESCRIPTIONS = {
+    "VTI":  "Owns a tiny piece of nearly every publicly traded U.S. company - from Apple to small businesses - in one fund.",
+    "VXUS": "Same idea as VTI, but covers international companies across Europe, Asia, and emerging markets.",
+    "BND":  "Holds thousands of U.S. government and corporate bonds - lower growth than stocks, but steadier and less volatile.",
+    "BNDX": "Like BND but for international bonds - adds geographic diversification to the stable part of your portfolio.",
+}
 
 # ---------------------------------------------------------------------------
-# Portfolio display
+# Main layout: pre-portfolio (full-width chat) vs post-portfolio (split view)
 # ---------------------------------------------------------------------------
-if st.session_state.portfolio:
-    st.divider()
-    st.subheader("Your Portfolio")
+if not st.session_state.portfolio:
+    # ----- PRE-PORTFOLIO: full-width chat + generate button -----
+    for msg in st.session_state.messages:
+        with st.chat_message(msg["role"]):
+            st.markdown(msg["content"])
 
-    prof = st.session_state.profile
-    st.caption(
-        f"{prof.get('goal', '')}  ·  {prof.get('timeline', '')} horizon  ·  "
-        f"${prof.get('monthly_budget', '0')}/mo  ·  {prof.get('risk_tolerance', '')} risk"
-    )
+    if st.session_state.ready:
+        if st.button("Generate My Portfolio", type="primary", use_container_width=True):
+            with st.spinner("Building your portfolio..."):
+                st.session_state.portfolio = generate_portfolio(st.session_state.profile)
+                st.session_state.rationale = generate_rationale(
+                    st.session_state.profile, st.session_state.portfolio, API_KEY
+                )
+                st.session_state.action_plan = generate_action_plan(
+                    st.session_state.profile, st.session_state.portfolio, API_KEY
+                )
+            st.rerun()
 
-    # Parse budget for per-ETF monthly amount
-    budget_raw = str(prof.get("monthly_budget") or "0")
-    try:
-        budget = float("".join(c for c in budget_raw if c.isdigit() or c == ".") or "0")
-    except ValueError:
-        budget = 0.0
+else:
+    # ----- POST-PORTFOLIO: two-column split view -----
+    col_chat, col_portfolio = st.columns([2, 3])
 
-    for item in st.session_state.portfolio:
-        monthly = budget * item["allocation"] / 100
-        c1, c2, c3 = st.columns([1.5, 3.5, 1])
-        with c1:
-            st.markdown(f"**{item['ticker']}**")
-            st.caption(item["name"])
-        with c2:
-            st.progress(item["allocation"] / 100)
-        with c3:
-            line = f"**{item['allocation']}%**"
-            if budget > 0:
-                line += f"  \n${monthly:.0f}/mo"
-            st.markdown(line)
-
-    # Rationale
-    if st.session_state.rationale:
-        st.divider()
-        st.subheader("Why This Portfolio?")
-        st.markdown(st.session_state.rationale)
-
-    # Growth projections
-    if budget > 0:
-        timeline_str = str(prof.get("timeline") or "10")
-        digits = "".join(c for c in timeline_str if c.isdigit())
-        proj_years = int(digits) if digits else 10
-        proj_years = max(proj_years, 5)  # at least 5 years
-
-        proj_df = generate_projections(st.session_state.portfolio, budget, proj_years)
-
-        st.divider()
-        st.subheader("Projected Growth")
-        st.caption("Estimated portfolio value over time based on historical averages")
-
-        # Line chart
-        chart_df = proj_df.set_index("Year")
-        st.line_chart(chart_df)
-
-        # Summary table at key milestones
-        milestones = [y for y in [5, 10, 15, 20, 25, 30, 40] if y <= proj_years]
-        if proj_years not in milestones:
-            milestones.append(proj_years)
-        milestones.sort()
-
-        summary_rows = proj_df[proj_df["Year"].isin(milestones)].copy()
-        summary_rows = summary_rows.set_index("Year")
-        for col in summary_rows.columns:
-            summary_rows[col] = summary_rows[col].apply(lambda x: f"${x:,.0f}")
-        st.table(summary_rows)
-
-        st.caption(
-            "Projections use historical average returns and assume consistent monthly "
-            "contributions. Actual results will vary. Past performance does not "
-            "guarantee future results."
+    # Left column: conversation (independently scrollable)
+    with col_chat:
+        st.subheader("Conversation")
+        with st.container(height=560, border=False):
+            for msg in st.session_state.messages:
+                with st.chat_message(msg["role"]):
+                    st.markdown(msg["content"])
+        st.info(
+            "**Still here to help!** You can keep chatting to:\n"
+            "- **Adjust your portfolio** — _\"Make it more aggressive\"_, "
+            "_\"Change my timeline to 20 years\"_, _\"What if I invest $300/month?\"_\n"
+            "- **Ask questions** — _\"What is an ETF?\"_, _\"Why was VTI chosen?\"_, "
+            "_\"What's the difference between stocks and bonds?\"_\n"
+            "- **Get recommendations** — _\"What account should I open?\"_, "
+            "_\"Should I open a Roth IRA?\"_"
         )
 
-    # Action plan
-    if st.session_state.action_plan:
-        st.divider()
-        with st.expander("How to Get Started", expanded=False):
-            st.markdown(st.session_state.action_plan)
+    # Right column: portfolio output (independently scrollable)
+    with col_portfolio:
+        with st.container(height=700, border=False):
+            st.subheader("Your Portfolio")
 
-    # Disclaimer
-    st.divider()
-    st.caption(
-        "ChatFolio is an educational tool, not a licensed financial advisor. "
-        "Allocations are based on general principles and historical averages -"
-        "past performance does not guarantee future results. Consult a qualified "
-        "financial professional before making investment decisions."
-    )
+            prof = st.session_state.profile
+            st.caption(
+                f"{prof.get('goal', '')}  ·  {prof.get('timeline', '')} horizon  ·  "
+                f"${prof.get('monthly_budget', '0')}/mo  ·  {prof.get('risk_tolerance', '')} risk"
+            )
+
+            # Parse budget for per-ETF monthly amount
+            budget_raw = str(prof.get("monthly_budget") or "0")
+            try:
+                budget = float("".join(c for c in budget_raw if c.isdigit() or c == ".") or "0")
+            except ValueError:
+                budget = 0.0
+
+            for item in st.session_state.portfolio:
+                monthly = budget * item["allocation"] / 100
+                c1, c2, c3 = st.columns([1.5, 3.5, 1])
+                with c1:
+                    st.markdown(f"**{item['ticker']}**")
+                    st.caption(item["name"])
+                with c2:
+                    st.progress(item["allocation"] / 100)
+                    desc = ETF_DESCRIPTIONS.get(item["ticker"])
+                    if desc:
+                        st.caption(desc)
+                with c3:
+                    line = f"**{item['allocation']}%**"
+                    if budget > 0:
+                        line += f"  \n${monthly:.0f}/mo"
+                    st.markdown(line)
+
+            # Rationale
+            if st.session_state.rationale:
+                st.divider()
+                st.subheader("Why This Portfolio?")
+                st.markdown(st.session_state.rationale)
+
+            # Growth projections
+            if budget > 0:
+                timeline_str = str(prof.get("timeline") or "10")
+                digits = "".join(c for c in timeline_str if c.isdigit())
+                proj_years = max(int(digits) if digits else 10, 5)
+
+                proj_df = generate_projections(st.session_state.portfolio, budget, proj_years)
+
+                st.divider()
+                st.subheader("Projected Growth")
+                st.caption("Estimated portfolio value over time based on historical averages")
+
+                chart_df = proj_df.set_index("Year")
+                st.line_chart(chart_df)
+
+                milestones = [y for y in [5, 10, 15, 20, 25, 30, 40] if y <= proj_years]
+                if proj_years not in milestones:
+                    milestones.append(proj_years)
+                milestones.sort()
+
+                summary_rows = proj_df[proj_df["Year"].isin(milestones)].copy()
+                summary_rows = summary_rows.set_index("Year")
+                for col in summary_rows.columns:
+                    summary_rows[col] = summary_rows[col].apply(lambda x: f"${x:,.0f}")
+                st.table(summary_rows)
+
+                st.caption(
+                    "Projections use historical average returns and assume consistent monthly "
+                    "contributions. Actual results will vary. Past performance does not "
+                    "guarantee future results."
+                )
+
+            # Action plan
+            if st.session_state.action_plan:
+                st.divider()
+                with st.expander("How to Get Started", expanded=True):
+                    st.markdown(st.session_state.action_plan)
+
+            # Disclaimer
+            st.divider()
+            st.caption(
+                "ChatFolio is an educational tool, not a licensed financial advisor. "
+                "Allocations are based on general principles and historical averages - "
+                "past performance does not guarantee future results. Consult a qualified "
+                "financial professional before making investment decisions."
+            )
 
 # ---------------------------------------------------------------------------
 # Chat input
@@ -270,12 +308,14 @@ if prompt := st.chat_input("Type your message..."):
 
     # If profile changed after portfolio was already generated, regenerate
     if resp.get("profile_changed") and st.session_state.portfolio:
-        st.session_state.portfolio = generate_portfolio(st.session_state.profile)
-        st.session_state.rationale = generate_rationale(
-            st.session_state.profile, st.session_state.portfolio, API_KEY
-        )
-        st.session_state.action_plan = generate_action_plan(
-            st.session_state.profile, st.session_state.portfolio, API_KEY
-        )
+        with st.spinner("Updating your portfolio..."):
+            st.session_state.portfolio = generate_portfolio(st.session_state.profile)
+            st.session_state.rationale = generate_rationale(
+                st.session_state.profile, st.session_state.portfolio, API_KEY
+            )
+            st.session_state.action_plan = generate_action_plan(
+                st.session_state.profile, st.session_state.portfolio, API_KEY
+            )
+        st.toast("Portfolio updated!", icon="✅")
 
     st.rerun()

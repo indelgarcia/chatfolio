@@ -1,24 +1,24 @@
-# ChatFolio — Product Requirements Document
+# ChatFolio - Product Requirements Document
 
-**Version:** 0.3 (Third Prototype Iteration)
-**Last updated:** 2026-03-31
+**Version:** 0.5 (Post-Generation UX Fix Pass)
+**Last updated:** 2026-04-14
 **Team:** Chris, Indel, Nate, Matt
 
 ---
 
 ## Overview
 
-ChatFolio is a conversational investment advisor that helps beginner investors build a starter ETF portfolio through natural dialogue instead of traditional brokerage forms. This is the third prototype — a functional Streamlit app with real AI conversation, portfolio rationale, growth projections, action plan, and post-generation iteration.
+ChatFolio is a conversational investment advisor that helps beginner investors build a starter ETF portfolio through natural dialogue instead of traditional brokerage forms. The current prototype includes a full conversational flow, portfolio rationale, growth projections, an action plan, and a post-generation split view that keeps chat iteration and portfolio review visible at the same time.
 
 ## Target User
 
-**Marcus J.** — 26, recent grad, first full-time job, ~$150/mo to invest. Intimidated by financial jargon and brokerage forms. Comfortable with chat interfaces. Wants to build wealth without learning finance theory.
+**Marcus J.** - 26, recent grad, first full-time job, ~$150/mo to invest. Intimidated by financial jargon and brokerage forms. Comfortable with chat interfaces. Wants to build wealth without learning finance theory.
 
 ## Functional Requirements
 
 ### FR1: Conversational Onboarding
 - GPT-4o-mini powers a real chat that asks about investment goal, time horizon, monthly budget, and risk comfort
-- One question at a time — never stacks multiple questions
+- One question at a time - never stacks multiple questions
 - Plain language throughout, financial terms explained inline
 - **HAI criteria:** Onboarding, User Input
 
@@ -73,10 +73,11 @@ ChatFolio is a conversational investment advisor that helps beginner investors b
 - **HAI criteria:** System Output
 
 ### FR10: Post-Generation Edit Loop
-- Chat remains active after portfolio generation
-- Users can request changes ("make it more aggressive", "change budget to $300")
-- AI interprets adjustment requests, updates profile fields, triggers portfolio regeneration
-- Portfolio, rationale, projections, and action plan all regenerate with updated profile
+- Chat remains active after portfolio generation in a dedicated left column
+- Conversation and portfolio output scroll independently so users can review one without losing their place in the other
+- Users can request changes, ask questions, or request recommendations; a prominent `st.info` banner lists example prompts by category (adjust, ask, recommend)
+- AI interprets adjustment requests, updates profile fields, and triggers portfolio regeneration with spinner + success toast feedback
+- Portfolio, rationale, projections, and action plan all regenerate in the right column with updated profile
 - **HAI criteria:** User Feedback
 
 ### FR11: Disclaimer & Guardrails
@@ -112,7 +113,7 @@ User <-> Streamlit Chat UI (app.py)
          portfolio.py  -- rule-based ETF allocation
               |
               v
-         portfolio display (progress bars + table)
+         split portfolio display (scrollable chat + scrollable portfolio column)
 ```
 
 ## File Map
@@ -122,7 +123,7 @@ User <-> Streamlit Chat UI (app.py)
 | `app.py` | Streamlit entry point: layout, chat loop, sidebar, portfolio display, onboarding, projections |
 | `chat_engine.py` | OpenAI API calls, system prompt, structured JSON extraction, rationale + action plan generation |
 | `portfolio.py` | Rule-based ETF allocation from user profile |
-| `projections.py` | Compound-growth projection math — produces DataFrame of portfolio value at yearly intervals |
+| `projections.py` | Compound-growth projection math - produces DataFrame of portfolio value at yearly intervals |
 | `requirements.txt` | Python dependencies (streamlit, openai, python-dotenv, pandas) |
 | `.env` | API key (git-ignored) |
 | `.streamlit/config.toml` | Dark theme configuration |
@@ -132,17 +133,18 @@ User <-> Streamlit Chat UI (app.py)
 
 ## Design Decisions
 
-1. **JSON mode for extraction** — System prompt instructs GPT-4o-mini to return conversation text + profile updates as JSON. Keeps extraction in-band with the conversation, no second API call.
-2. **Session state only** — No database. All profile and chat state lives in `st.session_state`. Sufficient for a prototype.
-3. **Broad-market ETFs only** — VTI, VXUS, BND, BNDX. Avoids sector bets that could conflict with user preferences.
-4. **Button-triggered generation** — Portfolio doesn't auto-generate. User clicks a button, keeping them in control (human-in-the-loop).
-5. **Dark theme** — Neutral dark gray (#1e1e1e) similar to ChatGPT/Claude. Clean, not flashy.
+1. **JSON mode for extraction** - System prompt instructs GPT-4o-mini to return conversation text + profile updates as JSON. Keeps extraction in-band with the conversation, no second API call.
+2. **Session state only** - No database. All profile and chat state lives in `st.session_state`. Sufficient for a prototype.
+3. **Broad-market ETFs only** - VTI, VXUS, BND, BNDX. Avoids sector bets that could conflict with user preferences.
+4. **Button-triggered generation** - Portfolio doesn't auto-generate. User clicks a button, keeping them in control (human-in-the-loop).
+5. **Dark theme** - Neutral dark gray (#1e1e1e) similar to ChatGPT/Claude. Clean, not flashy.
 
 ## Version History
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 0.1 | 2026-03 | First prototype — Lovable no-code mockup (static UI, no real AI) |
-| 0.2 | 2026-03-31 | Second prototype — functional Streamlit app with GPT-4o-mini, live profile, confirmation loops, portfolio generation |
-| 0.3 | 2026-03-31 | Third prototype — onboarding explainer, portfolio rationale, growth projections, action plan, post-generation edit loop, disclaimer & guardrails |
+| 0.1 | 2026-03 | First prototype - Lovable no-code mockup (static UI, no real AI) |
+| 0.2 | 2026-03-31 | Second prototype - functional Streamlit app with GPT-4o-mini, live profile, confirmation loops, portfolio generation |
+| 0.3 | 2026-03-31 | Third prototype - onboarding explainer, portfolio rationale, growth projections, action plan, post-generation edit loop, disclaimer & guardrails |
 | 0.4 | 2026-04-13 | V2 prompt refinement (quantitative eval iteration): explicit ETF-only scope, sequential field order, one-field-at-a-time enforcement, short-timeline warning, variable/zero budget guidance, debt advisory note, first-time investor encouragement, generate button phrasing fix, retirement year math, numeric risk scale mapping, historical return context, rationale mentions diversification + low cost |
+| 0.5 | 2026-04-14 | Post-generation UX fix pass: independent scrolling split view, more visible follow-up guidance banner with question/recommendation examples, and valid success toast feedback during regeneration |

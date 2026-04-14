@@ -21,45 +21,47 @@ Completed items are tracked in `PRD.md` version history. This file only lists re
 
 ---
 
-## 4. Richer User Input — Income, Expenses, Location, and Financial Context
+## 4. Richer User Input - Income, Expenses, Location, and Financial Context
+
+*Partial (V4 fix pass, April 2026): The `additional_info` prompt now proactively asks about existing savings, debt, and upcoming life changes. Full profile schema expansion (new sidebar fields, portfolio logic changes) remains below.*
 
 The profile currently captures only 4 required fields + 1 optional free-text field. The system knows nothing about the user's broader financial picture.
 
 **New profile fields to add:**
 
-- **Income** (gross annual/monthly) — assess if monthly_budget is realistic and sustainable
-- **Rent / housing costs** — gauge true disposable income, flag if emergency fund should come first
-- **Location / state** — tax implications (no state income tax in TX/FL/WA), cost-of-living context, Roth vs. Traditional IRA guidance
-- **Existing savings / emergency fund** — recommend building 3-6 months expenses before investing if none exists (but account for users with low expenses / living with parents who may not need one)
-- **Existing investments / retirement accounts** — avoid overlap (e.g., already have a 401k with employer match)
-- **Debt** — high-interest debt (credit cards) should be flagged; also car notes, student loans, mortgage
-- **Employment status / stability** — freelancer vs. stable salary affects approach
+- **Income** (gross annual/monthly) - assess if monthly_budget is realistic and sustainable
+- **Rent / housing costs** - gauge true disposable income, flag if emergency fund should come first
+- **Location / state** - tax implications (no state income tax in TX/FL/WA), cost-of-living context, Roth vs. Traditional IRA guidance
+- **Existing savings / emergency fund** - recommend building 3-6 months expenses before investing if none exists (but account for users with low expenses / living with parents who may not need one)
+- **Existing investments / retirement accounts** - avoid overlap (e.g., already have a 401k with employer match)
+- **Debt** - high-interest debt (credit cards) should be flagged; also car notes, student loans, mortgage
+- **Employment status / stability** - freelancer vs. stable salary affects approach
 
 **How these feed into output:**
 
 - Rationale passage references full financial picture
 - Portfolio allocation adjusts (high rent in expensive city -> more conservative)
 - Account type recommendations depend on income + state (Roth vs. Traditional)
-- System flags concerns ("Your budget is 25% of income — make sure you have an emergency fund")
+- System flags concerns ("Your budget is 25% of income - make sure you have an emergency fund")
 
-**Files to modify:** `chat_engine.py` (system prompt — add new fields, extend JSON schema), `app.py` (session state profile dict, sidebar labels, progress bar denominator), `portfolio.py` (factor new fields into allocation logic)
+**Files to modify:** `chat_engine.py` (system prompt - add new fields, extend JSON schema), `app.py` (session state profile dict, sidebar labels, progress bar denominator), `portfolio.py` (factor new fields into allocation logic)
 
 ---
 
 ## 4a. Additional Visualizations for Richer Input Data
 
-Depends on TODO #4 — needs income/expense data to be meaningful.
+Depends on TODO #4 - needs income/expense data to be meaningful.
 
-- **Income distribution chart** — how income splits across rent, expenses, savings, investing
-- **Budget sanity gauge** — % of income going to investing, color-coded (green/yellow/red)
-- **Tax impact visual** — estimated tax drag by state, Roth vs. taxable comparison over timeline
-- **Portfolio diversity chart** — pie chart or treemap by asset class (more intuitive than progress bars)
+- **Income distribution chart** - how income splits across rent, expenses, savings, investing
+- **Budget sanity gauge** - % of income going to investing, color-coded (green/yellow/red)
+- **Tax impact visual** - estimated tax drag by state, Roth vs. taxable comparison over timeline
+- **Portfolio diversity chart** - pie chart or treemap by asset class (more intuitive than progress bars)
 
 **Files to modify:** `app.py` (new chart sections in portfolio display area)
 
 ---
 
-## 5. Growth Projections — Remaining Work
+## 5. Growth Projections - Remaining Work
 
 Core projections are implemented (line chart, 3 scenarios, milestone table, disclaimer). One thing remains:
 
@@ -69,15 +71,17 @@ Core projections are implemented (line chart, 3 scenarios, milestone table, disc
 
 ---
 
-## 6. Post-Generation Edit Loop — Remaining Work
+## 6. Post-Generation Edit Loop - Remaining Work
 
-Core edit loop is implemented (chat stays active, AI handles adjustment requests, portfolio regenerates). Three things remain:
+Core edit loop is implemented (chat stays active, AI handles adjustment requests, portfolio regenerates). The current shipped UX also includes a two-column split view with independent scroll containers, a prominent follow-up help banner in the chat column, and spinner + toast feedback when a follow-up regenerates the portfolio. Three things remain:
 
-- **"What if" risk toggle buttons.** Display buttons like "What if I was more aggressive?" / "What if I was more conservative?" below the portfolio. Clicking one temporarily overrides risk_tolerance, regenerates portfolio + rationale + projections. Lowers the barrier — beginners are more likely to click a button than type a request. Feeds into portfolio versioning (TODO #12).
-- **Post-generation chat nudge.** Add an `st.info()` or caption after the portfolio that tells the user the chat is still active: "Want to adjust anything? Try 'What if I invested $300/month?' or 'Make it more aggressive.'" Users currently may not realize they can keep typing.
+- **"What if" risk toggle buttons.** Display buttons like "What if I was more aggressive?" / "What if I was more conservative?" below the portfolio. Clicking one temporarily overrides risk_tolerance, regenerates portfolio + rationale + projections. Lowers the barrier - beginners are more likely to click a button than type a request. Feeds into portfolio versioning (TODO #12).
+- ~~**Post-generation chat nudge.**~~ Done (V5 UX fix pass, April 2026). A prominent `st.info()` banner now appears beneath the chat column after generation, with example prompts for adjustments, questions, and recommendations so users know they can keep using the assistant.
+- ~~**Regeneration loading indicator.**~~ Done (V5 UX fix pass, April 2026). Auto-regeneration now wraps updates in `st.spinner("Updating your portfolio...")` plus `st.toast("Portfolio updated!", icon="✅")` so users can see that their follow-up triggered a change.
+- ~~**Shared post-generation page scroll.**~~ Done (V5 UX fix pass, April 2026). The post-generation layout now uses separate scrollable containers for the chat column and portfolio column, so users can review either side without moving both at once.
 - **Before/after comparison.** When portfolio regenerates, show what changed vs. previous version. Depends on TODO #12 (versioning).
 
-**Files to modify:** `app.py` (buttons in portfolio display section, info banner after portfolio)
+**Files to modify:** `app.py` (buttons in portfolio display section, comparison UI)
 
 ---
 
@@ -108,19 +112,20 @@ No way to save or share the output. Everything is lost when the tab closes.
 
 ## 10. Risk Tolerance Education
 
-Beginners don't know if they're "conservative" or "aggressive" — they default to "moderate" because it sounds safe.
+Beginners don't know if they're "conservative" or "aggressive" - they default to "moderate" because it sounds safe.
 
 - **Scenario-based questions** instead of self-labeling: "If your $10,000 investment suddenly dropped to $8,000 but could be $25,000 next year, would you: (a) sell, (b) hold, (c) buy more?" Map answers to a risk profile.
-- **Tangible examples** of what each risk level means in portfolio terms and expected volatility
-- **AI-suggested risk tolerance:** When the user's profile data (age, income, timeline, debt) suggests a different risk level than what they stated, the AI should gently flag it: "Based on your long timeline and stable income, you could afford to be more aggressive — that historically means higher returns. Want to see what that looks like?" User always has final say. Works in reverse too (flags aggressive + high debt).
+- ~~**Tangible examples** of what each risk level means in portfolio terms and expected volatility~~ Done (V4 fix pass, April 2026). System prompt now requires inline plain-language descriptions for all three risk levels whenever risk tolerance is asked. Numeric confidence percentages ("35% confident") are explicitly forbidden.
+- **AI-suggested risk tolerance:** When the user's profile data (age, income, timeline, debt) suggests a different risk level than what they stated, the AI should gently flag it: "Based on your long timeline and stable income, you could afford to be more aggressive - that historically means higher returns. Want to see what that looks like?" User always has final say. Works in reverse too (flags aggressive + high debt).
 
 *Partial prompt fix applied in V2 eval: numeric scale inputs (e.g., "7 out of 10") now prompt the AI to present both adjacent categories and ask the user to pick.*
+*Partial prompt fix applied in V4 fix pass: risk question now presents all three levels with plain-language descriptions. No-experience users handled explicitly.*
 
-**Files to modify:** `chat_engine.py` (system prompt — new question flow, suggestion logic)
+**Files to modify:** `chat_engine.py` (system prompt - new question flow, suggestion logic)
 
 ---
 
-## 11. Disclaimer Guardrails — Remaining Work
+## 11. Disclaimer Guardrails - Remaining Work
 
 Static disclaimer and system prompt guideline are implemented. One thing remains:
 
@@ -132,13 +137,13 @@ Static disclaimer and system prompt guideline are implemented. One thing remains
 
 ---
 
-## 12. Portfolio Versioning — Save and Compare Multiple Outputs Per Session
+## 12. Portfolio Versioning - Save and Compare Multiple Outputs Per Session
 
 When the user adjusts their profile post-generation, the old portfolio is silently replaced. No way to compare approaches.
 
-- **Save snapshots:** Each generation/regeneration saves to `st.session_state.portfolio_history` — includes allocation, profile at generation time, rationale, and auto-generated label (e.g., "Moderate — $150/mo")
+- **Save snapshots:** Each generation/regeneration saves to `st.session_state.portfolio_history` - includes allocation, profile at generation time, rationale, and auto-generated label (e.g., "Moderate - $150/mo")
 - **Tab navigation:** Display "Portfolio 1 | Portfolio 2 | Portfolio 3" tabs/buttons at top of portfolio section. Clicking shows that version's full output (allocation, rationale, projections, action plan).
 - **Comparison view:** Side-by-side columns showing two versions, highlighting differences in allocations and projected outcomes.
-- Works with "What if" buttons from TODO #6 — user generates moderate portfolio, clicks "more aggressive", then toggles between them.
+- Works with "What if" buttons from TODO #6 - user generates moderate portfolio, clicks "more aggressive", then toggles between them.
 
 **Files to modify:** `app.py` (history list in session state, tab UI, comparison layout)
