@@ -140,13 +140,22 @@ def get_chatfolio_response(question: str, stage: str) -> str:
 
 def rate_response(ground_truth: str, llm_response: str) -> int:
     """Rate LLM response quality against ground truth on a 1-5 scale."""
-    prompt = f"""Rate the quality of the LLM response compared to the ground truth reference on a scale of 1-5.
+    prompt = f"""You are evaluating a conversational AI investment advisor called ChatFolio.
+Rate the LLM Response against the Ground Truth Reference on a scale of 1-5.
 
-5 - Excellent: The response fully matches the expected behavior described in the ground truth.
-4 - Good: The response is mostly correct with minor differences from the ground truth.
-3 - Adequate: The response is partially correct but misses key elements of the ground truth.
-2 - Poor: The response mostly fails to match the expected behavior.
-1 - Unsatisfactory: The response is irrelevant or contradicts the ground truth.
+IMPORTANT evaluation guidelines:
+- The Ground Truth describes the GOAL or INTENT the response should achieve — it is NOT a word-for-word template.
+- Do NOT penalize a response for paraphrasing an answer back and asking for confirmation (e.g., "It sounds like X — does that sound right?"). This is correct and preferred behavior.
+- Do NOT penalize a response for adding helpful context (e.g., a note about short timelines, debt, or risk) as long as it still achieves the ground truth goal.
+- DO penalize a response if it fails to achieve the core goal described in the ground truth, asks an irrelevant question, skips a required step, or contradicts the ground truth.
+- For off-topic questions: the goal is to politely decline and redirect to investment topics. Any response that does this clearly earns at least a 4.
+
+Rating scale:
+5 - Excellent: Achieves the ground truth goal completely and appropriately.
+4 - Good: Achieves the ground truth goal with minor differences or extra helpful detail.
+3 - Adequate: Partially achieves the goal but misses a meaningful element (e.g., fails to redirect, forgets to ask the next question, or gives incomplete information).
+2 - Poor: Largely fails the ground truth goal (e.g., moves on without capturing the user's input, or gives a confusing/irrelevant response).
+1 - Unsatisfactory: Completely irrelevant to the ground truth or actively contradicts it.
 
 Ground Truth Reference: {ground_truth}
 LLM Response: {llm_response}"""
