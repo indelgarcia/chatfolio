@@ -39,6 +39,8 @@ if "rationale" not in st.session_state:
     st.session_state.rationale = None
 if "action_plan" not in st.session_state:
     st.session_state.action_plan = None
+if "pending_prompt" not in st.session_state:
+    st.session_state.pending_prompt = None
 
 API_KEY = os.getenv("OPENAI_API_KEY")
 
@@ -150,14 +152,23 @@ ETF_DESCRIPTIONS = {
     "BNDX": "Like BND but for international bonds - adds geographic diversification to the stable part of your portfolio.",
 }
 
+
+def render_chat_history(show_processing: bool = False) -> None:
+    """Render chat messages and an inline processing placeholder when needed."""
+    for msg in st.session_state.messages:
+        with st.chat_message(msg["role"]):
+            st.markdown(msg["content"])
+
+    if show_processing:
+        with st.chat_message("assistant"):
+            st.markdown("_Thinking..._")
+
 # ---------------------------------------------------------------------------
 # Main layout: pre-portfolio (full-width chat) vs post-portfolio (split view)
 # ---------------------------------------------------------------------------
 if not st.session_state.portfolio:
     # ----- PRE-PORTFOLIO: full-width chat + generate button -----
-    for msg in st.session_state.messages:
-        with st.chat_message(msg["role"]):
-            st.markdown(msg["content"])
+    render_chat_history(show_processing=bool(st.session_state.pending_prompt))
 
     if st.session_state.ready:
         if st.button("Generate My Portfolio", type="primary", use_container_width=True):
@@ -180,9 +191,7 @@ else:
     with col_chat:
         st.subheader("Conversation")
         with st.container(height=PANEL_HEIGHT, border=False):
-            for msg in st.session_state.messages:
-                with st.chat_message(msg["role"]):
-                    st.markdown(msg["content"])
+            render_chat_history(show_processing=bool(st.session_state.pending_prompt))
             st.info(
                 "**Still here to help!** You can keep chatting to:\n"
                 "- **Adjust your portfolio** — _\"Make it more aggressive\"_, "
@@ -281,10 +290,51 @@ else:
             )
 
 # ---------------------------------------------------------------------------
+# Pending chat processing
+# ---------------------------------------------------------------------------
+if st.session_state.pending_prompt:
+    api_msgs = [
+        {"role": m["role"], "content": m["content"]}
+        for m in st.session_state.messages
+    ]
+
+    with st.spinner("Thinking..."):
+        resp = get_ai_response(api_msgs, st.session_state.profile, API_KEY)
+
+    st.session_state.messages.append(
+        {"role": "assistant", "content": resp.get("message", "Could you rephrase that?")}
+    )
+
+    # Update profile with confirmed fields
+    for key, val in resp.get("profile_updates", {}).items():
+        if val is not None and key in st.session_state.profile:
+            st.session_state.profile[key] = str(val)
+
+    if resp.get("ready_for_portfolio"):
+        st.session_state.ready = True
+
+    # If profile changed after portfolio was already generated, regenerate
+    if resp.get("profile_changed") and st.session_state.portfolio:
+        with st.spinner("Updating your portfolio..."):
+            st.session_state.portfolio = generate_portfolio(st.session_state.profile)
+            st.session_state.rationale = generate_rationale(
+                st.session_state.profile, st.session_state.portfolio, API_KEY
+            )
+            st.session_state.action_plan = generate_action_plan(
+                st.session_state.profile, st.session_state.portfolio, API_KEY
+            )
+        st.toast("Portfolio updated!", icon="✅")
+
+    st.session_state.pending_prompt = None
+    st.rerun()
+
+# ---------------------------------------------------------------------------
 # Chat input
 # ---------------------------------------------------------------------------
-if prompt := st.chat_input("Type your message..."):
+if prompt := st.chat_input("Type your message...", disabled=bool(st.session_state.pending_prompt)):
     st.session_state.messages.append({"role": "user", "content": prompt})
+    st.session_state.pending_prompt = prompt
+    st.rerun()
 
     api_msgs = [
         {"role": m["role"], "content": m["content"]}
