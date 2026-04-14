@@ -173,30 +173,30 @@ if not st.session_state.portfolio:
 
 else:
     # ----- POST-PORTFOLIO: two-column split view -----
+    PANEL_HEIGHT = 760
     col_chat, col_portfolio = st.columns([2, 3])
 
     # Left column: conversation (independently scrollable)
     with col_chat:
         st.subheader("Conversation")
-        with st.container(height=560, border=False):
+        with st.container(height=PANEL_HEIGHT, border=False):
             for msg in st.session_state.messages:
                 with st.chat_message(msg["role"]):
                     st.markdown(msg["content"])
-        st.info(
-            "**Still here to help!** You can keep chatting to:\n"
-            "- **Adjust your portfolio** — _\"Make it more aggressive\"_, "
-            "_\"Change my timeline to 20 years\"_, _\"What if I invest $300/month?\"_\n"
-            "- **Ask questions** — _\"What is an ETF?\"_, _\"Why was VTI chosen?\"_, "
-            "_\"What's the difference between stocks and bonds?\"_\n"
-            "- **Get recommendations** — _\"What account should I open?\"_, "
-            "_\"Should I open a Roth IRA?\"_"
-        )
+            st.info(
+                "**Still here to help!** You can keep chatting to:\n"
+                "- **Adjust your portfolio** — _\"Make it more aggressive\"_, "
+                "_\"Change my timeline to 20 years\"_, _\"What if I invest $300/month?\"_\n"
+                "- **Ask questions** — _\"What is an ETF?\"_, _\"Why was VTI chosen?\"_, "
+                "_\"What's the difference between stocks and bonds?\"_\n"
+                "- **Get recommendations** — _\"What account should I open?\"_, "
+                "_\"Should I open a Roth IRA?\"_"
+            )
 
     # Right column: portfolio output (independently scrollable)
     with col_portfolio:
-        with st.container(height=700, border=False):
-            st.subheader("Your Portfolio")
-
+        st.subheader("Your Portfolio")
+        with st.container(height=PANEL_HEIGHT, border=False):
             prof = st.session_state.profile
             st.caption(
                 f"{prof.get('goal', '')}  ·  {prof.get('timeline', '')} horizon  ·  "
