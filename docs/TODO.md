@@ -114,6 +114,8 @@ Beginners don't know if they're "conservative" or "aggressive" — they default 
 - **Tangible examples** of what each risk level means in portfolio terms and expected volatility
 - **AI-suggested risk tolerance:** When the user's profile data (age, income, timeline, debt) suggests a different risk level than what they stated, the AI should gently flag it: "Based on your long timeline and stable income, you could afford to be more aggressive — that historically means higher returns. Want to see what that looks like?" User always has final say. Works in reverse too (flags aggressive + high debt).
 
+*Partial prompt fix applied in V2 eval: numeric scale inputs (e.g., "7 out of 10") now prompt the AI to present both adjacent categories and ask the user to pick.*
+
 **Files to modify:** `chat_engine.py` (system prompt — new question flow, suggestion logic)
 
 ---
@@ -123,6 +125,8 @@ Beginners don't know if they're "conservative" or "aggressive" — they default 
 Static disclaimer and system prompt guideline are implemented. One thing remains:
 
 - **Hard enforcement on stock pick requests.** The AI currently relies on a soft system prompt guideline to decline specific stock picks. Add explicit instructions that the AI should not recommend individual stocks by name unless the expanded portfolio system (TODO #1) is in place with proper reasoning.
+
+*Partial prompt fix applied in V2 eval: SYSTEM_PROMPT now explicitly states ChatFolio uses diversified ETFs only and instructs the model to redirect crypto/stock requests to the three risk levels.*
 
 **Files to modify:** `chat_engine.py` (strengthen system prompt guardrail)
 

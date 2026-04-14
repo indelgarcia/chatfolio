@@ -145,3 +145,4 @@ User <-> Streamlit Chat UI (app.py)
 | 0.1 | 2026-03 | First prototype — Lovable no-code mockup (static UI, no real AI) |
 | 0.2 | 2026-03-31 | Second prototype — functional Streamlit app with GPT-4o-mini, live profile, confirmation loops, portfolio generation |
 | 0.3 | 2026-03-31 | Third prototype — onboarding explainer, portfolio rationale, growth projections, action plan, post-generation edit loop, disclaimer & guardrails |
+| 0.4 | 2026-04-13 | V2 prompt refinement (quantitative eval iteration): explicit ETF-only scope, sequential field order, one-field-at-a-time enforcement, short-timeline warning, variable/zero budget guidance, debt advisory note, first-time investor encouragement, generate button phrasing fix, retirement year math, numeric risk scale mapping, historical return context, rationale mentions diversification + low cost |
