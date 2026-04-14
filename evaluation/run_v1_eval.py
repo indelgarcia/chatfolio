@@ -1,18 +1,31 @@
 """
-Run V1 evaluation: populate Predicted Relevancy and LLM Response V1 columns
-in benchmark_dataset.csv by calling GPT-4o-mini.
+Run V1 evaluation: populate Predicted Relevancy, LLM Response V1, and LLM V1 Rating
+columns in benchmark_dataset.csv using GPT-4o-mini with structured Pydantic output.
 """
 
 import os
-import sys
 import json
 import pandas as pd
+from pydantic import BaseModel
+from typing import Literal
 from dotenv import load_dotenv
 from openai import OpenAI
 
 # Load API key from project root .env
 load_dotenv(os.path.join(os.path.dirname(__file__), "..", ".env"))
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+
+# ---------------------------------------------------------------------------
+# Pydantic models for structured output
+# ---------------------------------------------------------------------------
+class ClassificationResult(BaseModel):
+    relevancy: Literal["Profile Building", "Off-Topic"]
+
+
+class Rating(BaseModel):
+    rating: Literal[1, 2, 3, 4, 5]
+
 
 # ---------------------------------------------------------------------------
 # ChatFolio system prompt (copied from chat_engine.py)
@@ -150,28 +163,21 @@ STAGE_CONTEXTS = {
 
 
 def classify_relevancy(question: str) -> str:
-    """Classify a question as Profile Building or Off-Topic."""
+    """Classify a question as Profile Building or Off-Topic using structured output."""
     prompt = f"""You are ChatFolio, an AI investment advisor that helps users build a starter portfolio.
 Your scope is limited to: investment goals, timelines, budgets, risk tolerance, and portfolio questions.
 
 Determine if the following user message is relevant to building an investment portfolio ("Profile Building")
 or completely unrelated ("Off-Topic").
 
-Respond with ONLY "Profile Building" or "Off-Topic". Nothing else.
-
 User message: {question}"""
 
-    response = client.chat.completions.create(
+    response = client.responses.parse(
         model="gpt-4o-mini",
-        messages=[{"role": "user", "content": prompt}],
-        temperature=0,
-        max_tokens=10,
+        input=prompt,
+        text_format=ClassificationResult,
     )
-    result = response.choices[0].message.content.strip()
-    # Normalize to expected values
-    if "off" in result.lower():
-        return "Off-Topic"
-    return "Profile Building"
+    return response.output_parsed.relevancy
 
 
 def get_chatfolio_response(question: str, stage: str) -> str:
@@ -204,37 +210,70 @@ def get_chatfolio_response(question: str, stage: str) -> str:
         return response.choices[0].message.content
 
 
+def rate_response(ground_truth: str, llm_response: str) -> int:
+    """Rate LLM response quality against ground truth on a 1-5 scale."""
+    prompt = f"""Rate the quality of the LLM response compared to the ground truth reference on a scale of 1-5.
+
+5 - Excellent: The response fully matches the expected behavior described in the ground truth.
+4 - Good: The response is mostly correct with minor differences from the ground truth.
+3 - Adequate: The response is partially correct but misses key elements of the ground truth.
+2 - Poor: The response mostly fails to match the expected behavior.
+1 - Unsatisfactory: The response is irrelevant or contradicts the ground truth.
+
+Ground Truth Reference: {ground_truth}
+LLM Response: {llm_response}"""
+
+    response = client.responses.parse(
+        model="gpt-4o-mini",
+        input=prompt,
+        text_format=Rating,
+    )
+    return response.output_parsed.rating
+
+
 def main():
     csv_path = os.path.join(os.path.dirname(__file__), "benchmark_dataset.csv")
     df = pd.read_csv(csv_path, keep_default_na=False, na_values=[""])
     print(f"Loaded {len(df)} samples")
 
-    # Drop empty rows
     df = df.dropna(subset=["Question", "Stage"]).reset_index(drop=True)
-    print(f"Processing {len(df)} valid samples")
+    print(f"Processing {len(df)} valid samples\n")
 
     for index, row in df.iterrows():
         question = row["Question"]
         stage = row["Stage"]
+        ground_truth = row.get("Ground Truth Response", "")
 
-        # Skip rows already filled (resume support)
-        if pd.notna(row.get("Predicted Relevancy")) and pd.notna(row.get("LLM Response V1")):
-            print(f"[{index + 1}/{len(df)}] SKIP (already filled)")
-            continue
-
-        # Step 1: Classify relevancy
+        # Step 1: Classify relevancy (always re-run)
         predicted = classify_relevancy(question)
         df.at[index, "Predicted Relevancy"] = predicted
 
-        # Step 2: Generate LLM response
-        response = get_chatfolio_response(question, stage)
-        df.at[index, "LLM Response V1"] = response
+        # Step 2: Generate LLM response (skip if already filled)
+        existing_response = row.get("LLM Response V1")
+        if pd.notna(existing_response) and str(existing_response).strip():
+            llm_response = str(existing_response).strip()
+            response_status = "SKIPPED"
+        else:
+            llm_response = get_chatfolio_response(question, stage)
+            df.at[index, "LLM Response V1"] = llm_response
+            response_status = "GENERATED"
 
-        print(f"[{index + 1}/{len(df)}] {stage:20s} | {predicted:17s} | {question[:50]}")
+        # Step 3: Rate response quality (always re-run)
+        rating = rate_response(ground_truth, llm_response)
+        df.at[index, "LLM V1 Rating"] = rating
 
-    df.to_csv(csv_path, index=False)
+        print(
+            f"[{index + 1:2d}/{len(df)}] {stage:16s} | {predicted:17s} | Rating: {rating} | "
+            f"Response: {response_status} | {question[:45]}"
+        )
+
+        # Save after every row in case of interruption
+        df.to_csv(csv_path, index=False)
+
     print(f"\nSaved to {csv_path}")
-    print(f"Predicted Relevancy distribution:\n{df['Predicted Relevancy'].value_counts()}")
+    print(f"\nPredicted Relevancy distribution:\n{df['Predicted Relevancy'].value_counts()}")
+    print(f"\nLLM V1 Rating distribution:\n{df['LLM V1 Rating'].value_counts().sort_index()}")
+    print(f"Average LLM V1 Rating: {df['LLM V1 Rating'].mean():.2f}")
 
 
 if __name__ == "__main__":
